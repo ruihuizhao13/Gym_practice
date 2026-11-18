@@ -1,0 +1,1063 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Practice Gym</title>
+<meta name="description" content="Practice Gym: rehearse a hard feedback conversation with an AI employee and get coached on it.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+/* Practice Gym design system tokens */
+:root { --surface: #f6f2ea; --surface-raised: #fffdf8; --surface-sunk: #ece6da; --ink: #1d2b2a; --ink-muted: #56625f; --line: #d9d1c2; --line-strong: #78827b; --teal: #1f5c58; --teal-soft: #dcebe7; --on-teal: #ffffff; --amber: #e9a23b; --on-amber: #2b1b04; --amber-soft: #f8e7c9; --amber-ink: #8a4a05; --shadow-card: 0 1px 2px rgba(29,43,42,0.06), 0 4px 16px rgba(29,43,42,0.06); --focus-ring: 0 0 0 2px #f6f2ea, 0 0 0 4px #1f5c58; --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-6: 24px; --space-8: 32px; --radius-sm: 6px; --radius-md: 12px; --radius-lg: 20px; --radius-pill: 999px; --font-serif: Fraunces, Georgia, "Times New Roman", serif; --font-sans: "Source Sans 3", "Segoe UI", system-ui, sans-serif; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --surface: #141b1b; --surface-raised: #1c2525; --surface-sunk: #0e1414; --ink: #ede8de; --ink-muted: #a9b2ae; --line: #2e3b3a; --line-strong: #6c7a77; --teal: #74c4b8; --teal-soft: #1d3633; --on-teal: #0b2220; --amber: #f0b45a; --on-amber: #2b1b04; --amber-soft: #3a2c15; --amber-ink: #f0b45a; --shadow-card: 0 1px 2px rgba(0,0,0,0.4); --focus-ring: 0 0 0 2px #141b1b, 0 0 0 4px #74c4b8; color-scheme: dark; } }
+:root[data-theme="dark"] { --surface: #141b1b; --surface-raised: #1c2525; --surface-sunk: #0e1414; --ink: #ede8de; --ink-muted: #a9b2ae; --line: #2e3b3a; --line-strong: #6c7a77; --teal: #74c4b8; --teal-soft: #1d3633; --on-teal: #0b2220; --amber: #f0b45a; --on-amber: #2b1b04; --amber-soft: #3a2c15; --amber-ink: #f0b45a; --shadow-card: 0 1px 2px rgba(0,0,0,0.4); --focus-ring: 0 0 0 2px #141b1b, 0 0 0 4px #74c4b8; color-scheme: dark; }
+html, body { margin: 0; background: var(--surface); color: var(--ink); }
+
+body { margin: 0; font-family: var(--font-sans); font-size: 16px; line-height: 24px; background: var(--surface); color: var(--ink); }
+.pg-pad { padding: var(--space-4); }
+.pg-row { display: flex; gap: var(--space-3); align-items: center; flex-wrap: wrap; }
+.pg-stack { display: flex; flex-direction: column; gap: var(--space-3); }
+.pg-muted { color: var(--ink-muted); }
+.pg-label { font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.pg-serif { font-family: var(--font-serif); font-weight: 560; }
+
+/* Button */
+.pg-btn { font: inherit; font-size: 16px; font-weight: 600; min-height: 44px; padding: 0 var(--space-4); border-radius: var(--radius-md); border: 1px solid var(--line-strong); background: var(--surface-raised); color: var(--ink); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); }
+.pg-btn-primary { background: var(--teal); border-color: var(--teal); color: var(--on-teal); }
+.pg-btn-accent { background: var(--amber); border-color: var(--amber); color: var(--on-amber); }
+.pg-btn-ghost { background: transparent; border-color: transparent; color: var(--teal); padding: 0 var(--space-2); }
+.pg-btn-block { width: 100%; }
+.pg-btn:disabled { opacity: .5; cursor: default; }
+.pg-btn:focus-visible, .pg-opt:focus-visible, .pg-tab:focus-visible, .pg-choice:focus-visible, .pg-action:focus-visible { outline: 2px solid transparent; box-shadow: var(--focus-ring); }
+
+/* Badge */
+.pg-badge { display: inline-flex; align-items: center; gap: var(--space-1); font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 2px var(--space-2); border-radius: var(--radius-sm); background: var(--surface-sunk); color: var(--ink-muted); }
+.pg-badge-teal { background: var(--teal-soft); color: var(--teal); }
+.pg-badge-amber { background: var(--amber-soft); color: var(--amber-ink); }
+
+/* Card */
+.pg-card { background: var(--surface-raised); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: var(--space-4); box-shadow: var(--shadow-card); }
+
+/* TabBar */
+.pg-tabbar { display: flex; justify-content: space-around; background: var(--surface-raised); border-top: 1px solid var(--line); padding: var(--space-2) var(--space-1); }
+.pg-tab { font: inherit; font-size: 12px; line-height: 16px; font-weight: 600; background: none; border: 0; color: var(--ink-muted); display: flex; flex-direction: column; align-items: center; gap: var(--space-1); padding: var(--space-1) var(--space-2); border-radius: var(--radius-md); cursor: pointer; }
+.pg-tab-dot { width: 24px; height: 4px; border-radius: var(--radius-pill); background: transparent; }
+.pg-tab[aria-current="page"] { color: var(--teal); }
+.pg-tab[aria-current="page"] .pg-tab-dot { background: var(--teal); }
+
+/* EntryAction (home) */
+.pg-action { font: inherit; text-align: left; width: 100%; display: flex; flex-direction: column; gap: var(--space-1); padding: var(--space-4); border-radius: var(--radius-lg); border: 1px solid var(--line); background: var(--surface-raised); color: var(--ink); cursor: pointer; }
+.pg-action-now { background: var(--amber); border-color: var(--amber); color: var(--on-amber); }
+.pg-action-title { font-size: 19px; line-height: 26px; font-weight: 600; }
+.pg-action-sub { font-size: 14px; line-height: 20px; }
+.pg-action:not(.pg-action-now) .pg-action-sub { color: var(--ink-muted); }
+
+/* LessonCard */
+.pg-lesson { display: flex; flex-direction: column; gap: var(--space-2); }
+.pg-lesson h3 { margin: 0; font-size: 19px; line-height: 26px; font-weight: 600; }
+.pg-progress { height: 6px; border-radius: var(--radius-pill); background: var(--surface-sunk); overflow: hidden; }
+.pg-progress > span { display: block; height: 100%; background: var(--teal); }
+
+/* SBIFrame */
+.pg-sbi { display: flex; flex-direction: column; gap: var(--space-2); }
+.pg-sbi-step { display: grid; grid-template-columns: 32px 1fr; gap: var(--space-3); align-items: start; padding: var(--space-3); border-radius: var(--radius-md); background: var(--surface-raised); border: 1px solid var(--line); }
+.pg-sbi-key { width: 32px; height: 32px; border-radius: var(--radius-sm); background: var(--teal); color: var(--on-teal); font-family: var(--font-serif); font-weight: 600; font-size: 18px; display: flex; align-items: center; justify-content: center; }
+.pg-sbi-step.pg-sbi-extra .pg-sbi-key { background: var(--teal-soft); color: var(--teal); }
+.pg-sbi-name { font-size: 14px; line-height: 20px; font-weight: 700; }
+.pg-sbi-text { font-size: 16px; line-height: 24px; }
+
+/* ExampleCompare */
+.pg-compare { display: grid; gap: var(--space-3); }
+.pg-ex { border-radius: var(--radius-md); padding: var(--space-3) var(--space-4); }
+.pg-ex-weak { background: var(--amber-soft); }
+.pg-ex-strong { background: var(--teal-soft); }
+.pg-ex-weak .pg-label { color: var(--amber-ink); }
+.pg-ex-strong .pg-label { color: var(--teal); }
+.pg-ex q { display: block; margin: var(--space-1) 0; font-family: var(--font-serif); font-size: 18px; line-height: 26px; quotes: "\201C" "\201D"; }
+.pg-ex p { margin: 0; font-size: 14px; line-height: 20px; }
+
+/* KnowledgeCheck */
+.pg-check { display: flex; flex-direction: column; gap: var(--space-3); }
+.pg-check-q { margin: 0; font-size: 19px; line-height: 26px; font-weight: 600; }
+.pg-opt { font: inherit; text-align: left; padding: var(--space-3); border-radius: var(--radius-md); border: 1px solid var(--line-strong); background: var(--surface-raised); color: var(--ink); cursor: pointer; display: flex; gap: var(--space-3); align-items: flex-start; }
+.pg-opt[aria-pressed="true"] { border-color: var(--teal); background: var(--teal-soft); }
+.pg-opt-mark { flex: none; width: 20px; height: 20px; border-radius: var(--radius-pill); border: 2px solid var(--line-strong); margin-top: 2px; }
+.pg-opt[aria-pressed="true"] .pg-opt-mark { border-color: var(--teal); background: var(--teal); box-shadow: inset 0 0 0 3px var(--teal-soft); }
+.pg-verdict { border-radius: var(--radius-md); padding: var(--space-3) var(--space-4); font-size: 14px; line-height: 20px; }
+.pg-verdict-ok { background: var(--teal-soft); }
+.pg-verdict-no { background: var(--amber-soft); }
+
+/* ScenarioCard */
+.pg-scn { display: flex; flex-direction: column; gap: var(--space-2); }
+.pg-scn h3 { margin: 0; font-family: var(--font-serif); font-weight: 560; font-size: 22px; line-height: 28px; }
+.pg-diff { display: inline-flex; gap: 3px; vertical-align: middle; }
+.pg-diff i { width: 8px; height: 14px; border-radius: 2px; background: var(--surface-sunk); border: 1px solid var(--line-strong); }
+.pg-diff i.on { background: var(--amber); border-color: var(--amber); }
+
+/* PersonaHeader */
+.pg-persona { display: flex; gap: var(--space-3); align-items: center; }
+.pg-avatar { flex: none; width: 44px; height: 44px; border-radius: var(--radius-pill); background: var(--surface-sunk); color: var(--ink); font-weight: 700; display: flex; align-items: center; justify-content: center; font-size: 16px; border: 1px solid var(--line-strong); }
+.pg-persona-main { flex: 1; min-width: 0; }
+.pg-persona-name { font-weight: 600; }
+.pg-meter { display: flex; gap: var(--space-1); margin-top: var(--space-1); }
+.pg-meter i { flex: 1; height: 6px; border-radius: var(--radius-sm); background: var(--surface-sunk); border: 1px solid var(--line); }
+.pg-meter i.on { background: var(--teal); border-color: var(--teal); }
+.pg-meter.low i.on { background: var(--amber); border-color: var(--amber); }
+
+/* ChatBubble */
+.pg-chat { display: flex; flex-direction: column; gap: var(--space-2); }
+.pg-msg { max-width: 84%; padding: var(--space-2) var(--space-3); border-radius: var(--radius-md); font-size: 16px; line-height: 24px; }
+.pg-msg-manager { align-self: flex-end; background: var(--teal); color: var(--on-teal); border-bottom-right-radius: var(--radius-sm); }
+.pg-msg-persona { align-self: flex-start; background: var(--surface-sunk); color: var(--ink); border-bottom-left-radius: var(--radius-sm); }
+.pg-msg-coach { align-self: stretch; max-width: none; background: var(--teal-soft); color: var(--ink); font-size: 14px; line-height: 20px; }
+.pg-msg-note { display: block; font-size: 14px; line-height: 20px; font-style: italic; color: var(--ink-muted); margin-top: 2px; }
+.pg-msg-who { display: block; font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--teal); margin-bottom: 2px; }
+
+/* ReplyChoices */
+.pg-choices { display: flex; flex-direction: column; gap: var(--space-2); }
+.pg-choice { font: inherit; text-align: left; padding: var(--space-2) var(--space-3); border-radius: var(--radius-md); border: 1px solid var(--line-strong); background: var(--surface-raised); color: var(--ink); cursor: pointer; font-size: 15px; line-height: 22px; }
+
+/* HintCard */
+.pg-hint { background: var(--amber-soft); border-radius: var(--radius-md); padding: var(--space-3) var(--space-4); font-size: 14px; line-height: 20px; }
+.pg-hint .pg-label { color: var(--amber-ink); display: block; margin-bottom: 2px; }
+
+/* RubricScore */
+.pg-rubric { display: flex; flex-direction: column; gap: var(--space-2); }
+.pg-rub-row { display: grid; grid-template-columns: 1fr auto; gap: var(--space-1) var(--space-3); align-items: center; padding: var(--space-2) 0; border-bottom: 1px solid var(--line); }
+.pg-rub-row:last-child { border-bottom: 0; }
+.pg-rub-name { font-weight: 600; font-size: 15px; }
+.pg-rub-pips { display: inline-flex; gap: 3px; align-items: center; }
+.pg-rub-pips i { width: 14px; height: 14px; border-radius: 3px; background: var(--surface-sunk); border: 1px solid var(--line-strong); }
+.pg-rub-pips i.on { background: var(--teal); border-color: var(--teal); }
+.pg-rub-score { font-size: 14px; font-weight: 700; min-width: 2.2em; text-align: right; }
+.pg-rub-ev { grid-column: 1 / -1; font-size: 14px; line-height: 20px; color: var(--ink-muted); }
+.pg-rub-focus .pg-rub-name::after { content: " · focus"; color: var(--amber-ink); font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+
+/* CoachFeedback */
+.pg-coach { display: flex; flex-direction: column; gap: var(--space-3); }
+.pg-coach-box { border-radius: var(--radius-md); padding: var(--space-3) var(--space-4); }
+.pg-coach-strength { background: var(--teal-soft); }
+.pg-coach-strength .pg-label { color: var(--teal); }
+.pg-coach-next { background: var(--amber-soft); }
+.pg-coach-next .pg-label { color: var(--amber-ink); }
+.pg-coach-box p { margin: var(--space-1) 0 0; }
+.pg-coach-rewrite { margin-top: var(--space-2); font-family: var(--font-serif); font-size: 17px; line-height: 25px; }
+
+/* Phone frame used by the flow prototypes */
+.pg-phone { width: 380px; max-width: 100%; height: 720px; margin: 0 auto; border-radius: 28px; border: 1px solid var(--line-strong); background: var(--surface); overflow: hidden; display: flex; flex-direction: column; box-shadow: var(--shadow-card); }
+.pg-phone-top { display: flex; align-items: center; gap: var(--space-2); padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--line); background: var(--surface-raised); min-height: 28px; }
+.pg-phone-top b { flex: 1; font-size: 15px; }
+.pg-phone-body { flex: 1; overflow-y: auto; padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-4); }
+.pg-phone-foot { padding: var(--space-3) var(--space-4); border-top: 1px solid var(--line); background: var(--surface-raised); display: flex; flex-direction: column; gap: var(--space-2); }
+.pg-textarea { font: inherit; width: 100%; box-sizing: border-box; min-height: 104px; padding: var(--space-3); border-radius: var(--radius-sm); border: 1px solid var(--line-strong); background: var(--surface-raised); color: var(--ink); resize: vertical; }
+.pg-textarea:focus-visible { outline: 2px solid transparent; box-shadow: var(--focus-ring); }
+.pg-chip { font: inherit; font-size: 14px; padding: var(--space-1) var(--space-3); border-radius: var(--radius-pill); border: 1px solid var(--line-strong); background: var(--surface-raised); color: var(--ink); }
+.pg-chip[aria-pressed="true"] { background: var(--teal-soft); border-color: var(--teal); color: var(--teal); font-weight: 600; }
+.pg-steps { display: flex; gap: var(--space-1); }
+.pg-steps i { flex: 1; height: 4px; border-radius: var(--radius-pill); background: var(--surface-sunk); }
+.pg-steps i.on { background: var(--teal); }
+.pg-h1 { margin: 0; font-family: var(--font-serif); font-weight: 560; font-size: 26px; line-height: 32px; }
+.pg-h2 { margin: 0; font-size: 19px; line-height: 26px; font-weight: 600; }
+.pg-p { margin: 0; }
+.pg-caption { text-align: center; font-size: 14px; line-height: 20px; color: var(--ink-muted); margin: var(--space-3) auto 0; max-width: 520px; }
+.pg-caption b { color: var(--ink); }
+
+/* Layout: one working column (max 980px) with a sticky step bar; coach step splits into feedback + ask-the-coach at wide widths. */
+html, body { background: var(--surface); color: var(--ink); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--surface-raised); }
+.lp-app { min-height: 100%; }
+.lp-top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--surface-raised); border-bottom: 1px solid var(--line); padding-block: 10px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-wrap: wrap; gap: 10px 24px; align-items: center; justify-content: space-between; }
+.lp-brand { display: flex; align-items: center; gap: 10px; }
+.lp-name { font-size: 22px; line-height: 28px; }
+.lp-steps { display: flex; gap: 4px; flex-wrap: wrap; }
+.lp-step { font: inherit; font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: var(--radius-pill); border: 1px solid transparent; background: transparent; color: var(--ink-muted); cursor: pointer; }
+.lp-step:disabled { opacity: .45; cursor: default; }
+.lp-step[aria-current="step"] { background: var(--teal-soft); color: var(--teal); border-color: var(--teal); }
+.lp-step-n { width: 20px; height: 20px; border-radius: var(--radius-pill); border: 1px solid currentColor; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-variant-numeric: tabular-nums; }
+.lp-step:focus-visible, .lp-scn:focus-visible, .lp-seg button:focus-visible, .pg-chip:focus-visible, .lp-input:focus-visible, .lp-check input:focus-visible { outline: 2px solid transparent; box-shadow: var(--focus-ring); }
+.lp-main { max-width: 980px; margin: 0 auto; padding-block: 24px 48px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 24px; }
+.lp-stack { display: flex; flex-direction: column; gap: 16px; }
+.lp-min0 { min-width: 0; }
+.lp-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.lp-row-between { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; }
+.lp-spacer { flex: 1; }
+.lp-small { font-size: 14px; line-height: 20px; }
+.lp-grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.lp-field { display: flex; flex-direction: column; gap: 4px; font-weight: 600; font-size: 14px; }
+.lp-input { font: inherit; font-weight: 400; font-size: 16px; padding: 10px 12px; border-radius: var(--radius-sm); border: 1px solid var(--line-strong); background: var(--surface-raised); color: var(--ink); min-width: 0; }
+.lp-check { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; line-height: 20px; cursor: pointer; }
+.lp-check input { margin-top: 3px; accent-color: var(--teal); width: 16px; height: 16px; flex: none; }
+.lp-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+.lp-scn { font: inherit; text-align: left; display: flex; flex-direction: column; gap: 6px; padding: 16px; border-radius: var(--radius-lg); border: 1px solid var(--line-strong); background: var(--surface-raised); color: var(--ink); cursor: pointer; }
+.lp-scn[aria-pressed="true"] { border-color: var(--teal); box-shadow: inset 0 0 0 1px var(--teal); background: var(--teal-soft); }
+.lp-scn-title { font-family: var(--font-serif); font-weight: 560; font-size: 20px; line-height: 26px; text-wrap: balance; }
+.lp-seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--line-strong); border-radius: var(--radius-pill); overflow: hidden; }
+.lp-seg button { font: inherit; font-size: 14px; border: 0; background: var(--surface-raised); color: var(--ink); padding: 6px 14px; cursor: pointer; }
+.lp-seg button[aria-pressed="true"] { background: var(--teal); color: var(--on-teal); font-weight: 700; }
+.lp-goals { display: flex; flex-wrap: wrap; gap: 8px; }
+.lp-goal { font-size: 14px; padding: 4px 12px; border-radius: var(--radius-pill); background: var(--surface-sunk); color: var(--ink); }
+.lp-goal.is-focus { background: var(--amber-soft); color: var(--amber-ink); font-weight: 700; }
+.lp-chatbox { border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface-raised); box-shadow: var(--shadow-card); overflow: hidden; display: flex; flex-direction: column; }
+.lp-chathead { padding: 12px 16px; border-bottom: 1px solid var(--line); }
+.lp-chatlog { padding: 16px; max-height: 520px; min-height: 220px; overflow-y: auto; background: var(--surface); }
+.lp-compose { padding: 12px 16px; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 10px; }
+.lp-msg { min-height: 72px; }
+.lp-draftchip { align-self: flex-start; cursor: pointer; }
+.pg-chip { cursor: pointer; text-align: left; }
+.pg-chip:disabled { opacity: .5; cursor: default; }
+.lp-trace { font-size: 12.5px; line-height: 18px; color: var(--ink-muted); align-self: flex-start; }
+.lp-thinking { display: inline-flex; align-items: center; gap: 10px; font-size: 14px; color: var(--ink-muted); padding: 6px 0; }
+.lp-dots { display: inline-flex; gap: 4px; }
+.lp-dots i { width: 6px; height: 6px; border-radius: var(--radius-pill); background: var(--teal); animation: lp-b 1.2s infinite ease-in-out; }
+.lp-dots i:nth-child(2) { animation-delay: .15s; } .lp-dots i:nth-child(3) { animation-delay: .3s; }
+@keyframes lp-b { 0%, 80%, 100% { opacity: .25; } 40% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .lp-dots i { animation: none; opacity: .7; } }
+.lp-err { background: var(--amber-soft); color: var(--ink); border-radius: var(--radius-md); padding: 10px 14px; font-size: 14px; line-height: 20px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.lp-coachgrid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+@media (max-width: 820px) { .lp-coachgrid { grid-template-columns: 1fr; } }
+.lp-askcoach { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 72px); }
+@media (max-width: 820px) { .lp-askcoach { position: static; } }
+.lp-coachlog { max-height: 460px; overflow-y: auto; }
+.lp-coachmsg { background: var(--teal-soft); color: var(--ink); border-radius: var(--radius-md); padding: 10px 14px; font-size: 15px; line-height: 23px; white-space: pre-wrap; word-break: break-word; }
+.lp-coachmsg.is-err { background: var(--amber-soft); }
+.lp-focus { font-size: 15px; }
+.lp-focus b { font-size: 22px; font-variant-numeric: tabular-nums; }
+.lp-up { color: var(--teal); font-weight: 700; }
+.lp-table { width: 100%; border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums; }
+.lp-table th, .lp-table td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+.lp-table th { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-muted); }
+.lp-behind { border-top: 1px solid var(--line); padding-top: 16px; display: flex; flex-direction: column; gap: 12px; }
+.lp-call { border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface-raised); }
+.lp-call summary { cursor: pointer; padding: 8px 12px; font-size: 14px; font-weight: 600; }
+.lp-callgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; padding: 0 12px 12px; }
+.lp-pre { margin: 4px 0 0; padding: 10px; background: var(--surface-sunk); border-radius: var(--radius-sm); white-space: pre-wrap; word-break: break-word; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; line-height: 18px; max-height: 320px; overflow: auto; color: var(--ink); }
+.lp-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.pg-h1, .pg-h2, .pg-check-q { text-wrap: balance; }
+
+.lp-next { border-color: var(--line-strong); }
+.lp-level { font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 4px 10px; border-radius: var(--radius-pill); }
+.lp-level-low { background: var(--amber); color: var(--on-amber); }
+.lp-level-medium { background: var(--amber-soft); color: var(--amber-ink); }
+.lp-level-high { background: var(--teal-soft); color: var(--teal); }
+.lp-tips { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; }
+.lp-reflect { align-self: stretch; padding: 8px 14px; border-radius: var(--radius-md); }
+
+
+.pgc { position: fixed; right: 16px; bottom: 16px; z-index: 50; font-family: var(--font-sans, 'Source Sans 3', Arial, sans-serif); font-size: 14px; }
+.pgc-toggle { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line, #d9d1c2); background: var(--surface-raised, #fffdf8); color: var(--ink-muted, #56625f); cursor: pointer; font: inherit; }
+.pgc-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--amber, #e9a23b); }
+.pgc-dot.on { background: var(--teal, #1f5c58); }
+.pgc-box { position: absolute; right: 0; bottom: 44px; width: min(320px, calc(100vw - 32px)); padding: 16px; border-radius: 12px; border: 1px solid var(--line, #d9d1c2); background: var(--surface-raised, #fffdf8); color: var(--ink, #1d2b2a); box-shadow: 0 8px 24px rgba(0,0,0,.12); display: flex; flex-direction: column; gap: 10px; }
+.pgc-box[hidden] { display: none; }
+.pgc-title { margin: 0; font-weight: 700; }
+.pgc-lbl { display: flex; flex-direction: column; gap: 4px; color: var(--ink-muted, #56625f); }
+.pgc-in { font: inherit; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line, #d9d1c2); background: var(--surface, #f6f2ea); color: var(--ink, #1d2b2a); }
+.pgc-note { margin: 0; font-size: 12.5px; color: var(--ink-muted, #56625f); }
+.pgc-row { display: flex; gap: 8px; }
+.pgc-btn { font: inherit; font-weight: 600; padding: 8px 12px; border-radius: 8px; border: 0; background: var(--teal, #1f5c58); color: #fffdf8; cursor: pointer; }
+.pgc-btn.ghost { background: transparent; color: var(--teal, #1f5c58); border: 1px solid var(--line, #d9d1c2); }
+@media print { .pgc { display: none; } }
+
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+/* Practice Gym · AI connector for the GitHub Pages version.
+   On claude.ai the prototype asks Claude through the artifact runtime (window.claude.use('sample')).
+   Here the same interface is rebuilt on the Claude API, using a key the facilitator provides.
+   The key stays in this browser (localStorage) and is sent only to api.anthropic.com. */
+(function () {
+  var KEY = 'pg_api_key', MODEL = 'pg_model';
+  var DEFAULT_MODEL = 'claude-sonnet-5-5', QUICK_MODEL = 'claude-haiku-5-5';
+  function get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function put(k, v) { try { if (v) localStorage.setItem(k, v); else localStorage.removeItem(k); } catch (e) {} }
+
+  // A testing link can carry the key: https://<you>.github.io/practice-gym/#key=sk-ant-...
+  try {
+    var m = location.hash.match(/key=([^&]+)/);
+    if (m) { put(KEY, decodeURIComponent(m[1]).trim()); history.replaceState(null, '', location.pathname + location.search); }
+  } catch (e) {}
+
+  function toMessages(input) {
+    if (typeof input === 'string') return [{ role: 'user', content: input }];
+    var out = [];
+    input.forEach(function (t) {
+      var r = t.role === 'assistant' ? 'assistant' : 'user';
+      var last = out[out.length - 1];
+      if (last && last.role === r) last.content += '\n\n' + t.content; else out.push({ role: r, content: String(t.content) });
+    });
+    if (out.length && out[0].role !== 'user') out.unshift({ role: 'user', content: '(The conversation begins.)' });
+    if (out.length && out[out.length - 1].role === 'assistant') out[out.length - 1].content = out[out.length - 1].content.replace(/\s+$/, '');
+    return out;
+  }
+  function fail(code, text) { return { code: code, text: text || '' }; }
+
+  function request(input, opts) {
+    opts = opts || {};
+    var key = get(KEY);
+    if (!key) return Promise.reject(fail('not_granted'));
+    var model = opts.modelTier === 'quick' ? QUICK_MODEL : (get(MODEL) || DEFAULT_MODEL);
+    var stream = typeof opts.onText === 'function';
+    var sofar = '';
+    return fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      signal: opts.signal,
+      headers: {
+        'content-type': 'application/json',
+        'x-api-key': key,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({ model: model, max_tokens: 4096, messages: toMessages(input), stream: stream })
+    }).then(function (res) {
+      if (!res.ok) {
+        return res.text().then(function (t) {
+          if (res.status === 401 || res.status === 403) throw fail('bad_key', t);
+          if (res.status === 429 || res.status === 529) throw fail('rate_limited', t);
+          if (res.status === 404 || /model/i.test(t)) throw fail('bad_model', t);
+          throw fail('api_error', t);
+        });
+      }
+      if (!stream) return res.json().then(function (j) { return (j.content || []).map(function (c) { return c.text || ''; }).join(''); });
+      var reader = res.body.getReader(), dec = new TextDecoder(), buf = '';
+      function pump() {
+        return reader.read().then(function (r) {
+          if (r.done) return sofar;
+          buf += dec.decode(r.value, { stream: true });
+          var parts = buf.split('\n\n'); buf = parts.pop();
+          parts.forEach(function (ev) {
+            ev.split('\n').forEach(function (line) {
+              if (line.indexOf('data:') !== 0) return;
+              try {
+                var d = JSON.parse(line.slice(5));
+                if (d.type === 'content_block_delta' && d.delta && d.delta.text) { sofar += d.delta.text; opts.onText({ text: sofar, delta: d.delta.text }); }
+                if (d.type === 'error') throw fail('api_error', JSON.stringify(d.error));
+              } catch (e) { if (e && e.code) throw e; }
+            });
+          });
+          return pump();
+        });
+      }
+      return pump();
+    }).catch(function (e) {
+      if (e && e.name === 'AbortError') throw fail('cancelled', sofar);
+      if (e && e.code) throw e;
+      throw fail('network', (e && e.message) || '');
+    });
+  }
+
+  function parseJson(text) {
+    var t = text.replace(/```(?:json)?/g, '').trim();
+    var a = t.search(/[\[{]/), b = Math.max(t.lastIndexOf('}'), t.lastIndexOf(']'));
+    if (a < 0 || b < a) throw fail('invalid_json', text);
+    try { return JSON.parse(t.slice(a, b + 1)); } catch (e) { throw fail('invalid_json', text); }
+  }
+
+  var sample = function (input, opts) { return request(input, opts).then(function (t) { return { text: t, truncated: false }; }); };
+  sample.json = function (input, opts) {
+    var o = Object.assign({}, opts || {}); delete o.onText;
+    return request(input, o).then(parseJson);
+  };
+
+  window.claude = { use: function (name) { return Promise.resolve(name === 'sample' && get(KEY) ? sample : null); } };
+
+  // ---------- small "AI settings" panel (for the facilitator) ----------
+  function panel() {
+    var on = !!get(KEY);
+    var wrap = document.createElement('div');
+    wrap.className = 'pgc';
+    wrap.innerHTML =
+      '<button type="button" class="pgc-toggle" aria-expanded="false"><span class="pgc-dot ' + (on ? 'on' : '') + '"></span>' + (on ? 'AI connected' : 'AI not connected') + '</button>' +
+      '<div class="pgc-box" hidden>' +
+      '<p class="pgc-title">AI settings (for the facilitator)</p>' +
+      '<label class="pgc-lbl">Claude API key<input class="pgc-in" id="pgc-key" type="password" autocomplete="off" placeholder="sk-ant-..."></label>' +
+      '<label class="pgc-lbl">Model<input class="pgc-in" id="pgc-model" type="text" placeholder="' + DEFAULT_MODEL + '"></label>' +
+      '<p class="pgc-note">The key is saved only in this browser and sent only to api.anthropic.com.</p>' +
+      '<div class="pgc-row"><button type="button" class="pgc-btn" id="pgc-save">Save and reload</button><button type="button" class="pgc-btn ghost" id="pgc-clear">Disconnect</button></div>' +
+      '</div>';
+    document.body.appendChild(wrap);
+    var tog = wrap.querySelector('.pgc-toggle'), box = wrap.querySelector('.pgc-box');
+    wrap.querySelector('#pgc-model').value = get(MODEL) || '';
+    tog.addEventListener('click', function () { box.hidden = !box.hidden; tog.setAttribute('aria-expanded', String(!box.hidden)); });
+    wrap.querySelector('#pgc-save').addEventListener('click', function () {
+      var k = wrap.querySelector('#pgc-key').value.trim(), md = wrap.querySelector('#pgc-model').value.trim();
+      if (k) put(KEY, k); put(MODEL, md); location.reload();
+    });
+    wrap.querySelector('#pgc-clear').addEventListener('click', function () { put(KEY, null); location.reload(); });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', panel); else panel();
+})();
+
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script>
+/* @ds-bundle: {"format":4,"namespace":"PracticeGym","components":[{"name":"Button"},{"name":"Badge"},{"name":"TabBar"},{"name":"EntryAction"},{"name":"LessonCard"},{"name":"SBIFrame"},{"name":"ExampleCompare"},{"name":"KnowledgeCheck"},{"name":"ScenarioCard"},{"name":"PersonaHeader"},{"name":"ChatBubble"},{"name":"ReplyChoices"},{"name":"HintCard"},{"name":"RubricScore"},{"name":"CoachFeedback"}]} */
+(function () {
+  var R = window.React, h = R.createElement;
+  function cx() { return Array.prototype.filter.call(arguments, Boolean).join(' '); }
+  function pick(o, omit) { var r = {}; for (var k in o) if (omit.indexOf(k) < 0) r[k] = o[k]; return r; }
+  function range(n) { var a = []; for (var i = 0; i < n; i++) a.push(i); return a; }
+
+  function Button(p) {
+    var v = p.variant || 'quiet';
+    return h('button', Object.assign({ type: 'button' }, pick(p, ['variant', 'block', 'className']), {
+      className: cx('pg-btn', v !== 'quiet' && 'pg-btn-' + v, p.block && 'pg-btn-block', p.className)
+    }));
+  }
+
+  function Badge(p) {
+    var t = p.tone || 'neutral';
+    return h('span', { className: cx('pg-badge', t !== 'neutral' && 'pg-badge-' + t) }, p.children);
+  }
+
+  var TABS = ['Home', 'Practice', 'My Skill', 'Coach', 'Progress'];
+  function TabBar(p) {
+    var items = p.items || TABS, active = p.active || items[0];
+    return h('nav', { className: 'pg-tabbar', 'aria-label': 'Main' }, items.map(function (t) {
+      return h('button', { key: t, type: 'button', className: 'pg-tab', 'aria-current': t === active ? 'page' : undefined,
+        onClick: p.onSelect ? function () { p.onSelect(t); } : undefined },
+        h('span', { className: 'pg-tab-dot', 'aria-hidden': true }), t);
+    }));
+  }
+
+  function EntryAction(p) {
+    return h('button', { type: 'button', className: cx('pg-action', p.kind === 'now' && 'pg-action-now'), onClick: p.onClick },
+      p.eyebrow ? h('span', { className: 'pg-label' }, p.eyebrow) : null,
+      h('span', { className: 'pg-action-title' }, p.title),
+      p.subtitle ? h('span', { className: 'pg-action-sub' }, p.subtitle) : null);
+  }
+
+  function LessonCard(p) {
+    var pct = Math.max(0, Math.min(100, p.progress || 0));
+    return h('div', { className: 'pg-card pg-lesson' },
+      h('div', { className: 'pg-row' },
+        h(Badge, { tone: 'teal' }, p.minutes + ' min'),
+        p.skill ? h(Badge, null, p.skill) : null,
+        p.personalized ? h(Badge, { tone: 'amber' }, 'From your ' + p.personalized) : null),
+      h('h3', null, p.title),
+      p.summary ? h('p', { className: 'pg-p pg-muted', style: { fontSize: 14, lineHeight: '20px' } }, p.summary) : null,
+      pct > 0 ? h('div', { className: 'pg-progress', role: 'progressbar', 'aria-valuenow': pct, 'aria-valuemin': 0, 'aria-valuemax': 100, 'aria-label': 'Lesson progress' }, h('span', { style: { width: pct + '%' } })) : null,
+      p.action || null);
+  }
+
+  var SBI_KEYS = [['situation', 'S', 'Situation', 'When and where it happened'], ['behavior', 'B', 'Behavior', 'What you observed, not what you assume'], ['impact', 'I', 'Impact', 'The effect on work, people or customers'], ['question', 'Q', 'Question', 'Invite their perspective'], ['nextStep', 'N', 'Next step', 'Agree what happens next']];
+  function SBIFrame(p) {
+    return h('div', { className: 'pg-sbi' }, SBI_KEYS.filter(function (k) { return p[k[0]] != null; }).map(function (k, i) {
+      return h('div', { key: k[0], className: cx('pg-sbi-step', i > 2 && 'pg-sbi-extra') },
+        h('span', { className: 'pg-sbi-key', 'aria-hidden': true }, k[1]),
+        h('div', null,
+          h('div', { className: 'pg-sbi-name' }, k[2], h('span', { className: 'pg-muted', style: { fontWeight: 400 } }, ' · ' + k[3])),
+          p[k[0]] ? h('div', { className: 'pg-sbi-text' }, p[k[0]]) : null));
+    }));
+  }
+
+  function ExampleCompare(p) {
+    return h('div', { className: 'pg-compare' },
+      h('div', { className: 'pg-ex pg-ex-weak' }, h('span', { className: 'pg-label' }, p.weakLabel || 'Weaker'), h('q', null, p.weak), p.weakNote ? h('p', null, p.weakNote) : null),
+      h('div', { className: 'pg-ex pg-ex-strong' }, h('span', { className: 'pg-label' }, p.strongLabel || 'Stronger'), h('q', null, p.strong), p.strongNote ? h('p', null, p.strongNote) : null));
+  }
+
+  function KnowledgeCheck(p) {
+    var s = R.useState(p.defaultSelected || null), sel = s[0], setSel = s[1];
+    var chosen = (p.options || []).filter(function (o) { return o.id === sel; })[0];
+    var ok = chosen && chosen.id === p.correctId;
+    return h('div', { className: 'pg-check' },
+      h('p', { className: 'pg-check-q' }, p.question),
+      (p.options || []).map(function (o) {
+        return h('button', { key: o.id, type: 'button', className: 'pg-opt', 'aria-pressed': sel === o.id,
+          onClick: function () { setSel(o.id); if (p.onAnswer) p.onAnswer(o.id, o.id === p.correctId); } },
+          h('span', { className: 'pg-opt-mark', 'aria-hidden': true }), h('span', null, o.text));
+      }),
+      chosen ? h('div', { className: cx('pg-verdict', ok ? 'pg-verdict-ok' : 'pg-verdict-no'), role: 'status' },
+        h('b', null, ok ? 'Yes. ' : 'Not quite. '), chosen.feedback || p.explanation) : null);
+  }
+
+  function Difficulty(n) {
+    return h('span', { className: 'pg-diff', role: 'img', 'aria-label': 'Difficulty ' + n + ' of 3' }, range(3).map(function (i) { return h('i', { key: i, className: i < n ? 'on' : '' }); }));
+  }
+  function ScenarioCard(p) {
+    return h('div', { className: 'pg-card pg-scn' },
+      h('div', { className: 'pg-row', style: { gap: 8 } },
+        h(Badge, { tone: 'teal' }, p.skill || 'Giving feedback'),
+        h('span', { className: 'pg-row', style: { gap: 6, fontSize: 14 } }, Difficulty(p.difficulty || 1), h('span', { className: 'pg-muted' }, ['', 'Warm-up', 'Realistic', 'Tough'][p.difficulty || 1])),
+        p.minutes ? h('span', { className: 'pg-muted', style: { fontSize: 14 } }, '· ' + p.minutes + ' min') : null),
+      h('h3', null, p.title),
+      h('div', { className: 'pg-muted', style: { fontSize: 14, lineHeight: '20px' } }, p.persona + (p.role ? ', ' + p.role : '') + (p.reaction ? ' · likely reaction: ' + p.reaction : '')),
+      p.situation ? h('p', { className: 'pg-p' }, p.situation) : null,
+      p.action || null);
+  }
+
+  var OPEN_WORDS = ['', 'Shut down', 'Guarded', 'Listening', 'Open', 'Engaged'];
+  function PersonaHeader(p) {
+    var o = p.openness || 3, initials = (p.name || '?').split(' ').map(function (w) { return w[0]; }).join('').slice(0, 2);
+    return h('div', { className: 'pg-persona' },
+      h('span', { className: 'pg-avatar', 'aria-hidden': true }, initials),
+      h('div', { className: 'pg-persona-main' },
+        h('div', { className: 'pg-persona-name' }, p.name, p.role ? h('span', { className: 'pg-muted', style: { fontWeight: 400, fontSize: 14 } }, ' · ' + p.role) : null),
+        p.showMeter === false ? null : h('div', { style: { fontSize: 14, lineHeight: '20px' } },
+          h('span', { className: 'pg-muted' }, 'Openness: '), h('b', null, OPEN_WORDS[o]),
+          h('div', { className: cx('pg-meter', o <= 2 && 'low'), role: 'meter', 'aria-valuenow': o, 'aria-valuemin': 1, 'aria-valuemax': 5, 'aria-label': 'Openness' },
+            range(5).map(function (i) { return h('i', { key: i, className: i < o ? 'on' : '' }); })))),
+      p.aside || null);
+  }
+
+  function ChatBubble(p) {
+    var from = p.from || 'persona';
+    return h('div', { className: cx('pg-msg', 'pg-msg-' + from) },
+      from === 'coach' ? h('span', { className: 'pg-msg-who' }, p.who || 'Coach') : null,
+      p.children,
+      p.note ? h('span', { className: 'pg-msg-note' }, p.note) : null);
+  }
+
+  function ReplyChoices(p) {
+    return h('div', { className: 'pg-choices', role: 'group', 'aria-label': p.label || 'Choose your reply' }, (p.options || []).map(function (o, i) {
+      return h('button', { key: i, type: 'button', className: 'pg-choice', onClick: function () { if (p.onChoose) p.onChoose(o, i); } }, o.text || o);
+    }));
+  }
+
+  function HintCard(p) {
+    return h('div', { className: 'pg-hint', role: 'note' }, h('span', { className: 'pg-label' }, p.label || 'Hint'), p.children);
+  }
+
+  function RubricScore(p) {
+    return h('div', { className: 'pg-rubric' }, (p.dimensions || []).map(function (d) {
+      var na = d.score == null;
+      return h('div', { key: d.name, className: cx('pg-rub-row', d.focus && 'pg-rub-focus') },
+        h('span', { className: 'pg-rub-name' }, d.name),
+        h('span', { className: 'pg-row', style: { gap: 8 } },
+          h('span', { className: 'pg-rub-pips', role: 'img', 'aria-label': na ? 'Not reached' : d.score + ' of 4' }, range(4).map(function (i) { return h('i', { key: i, className: !na && i < d.score ? 'on' : '' }); })),
+          h('span', { className: 'pg-rub-score' }, na ? 'n/a' : d.score + '/4')),
+        d.evidence && p.showEvidence !== false ? h('span', { className: 'pg-rub-ev' }, d.evidence) : null);
+    }));
+  }
+
+  function CoachFeedback(p) {
+    return h('div', { className: 'pg-coach' },
+      h('div', { className: 'pg-coach-box pg-coach-strength' }, h('span', { className: 'pg-label' }, 'Strength'), h('p', null, p.strength)),
+      h('div', { className: 'pg-coach-box pg-coach-next' }, h('span', { className: 'pg-label' }, 'Try next'), h('p', null, p.improve),
+        p.rewrite ? h('div', { className: 'pg-coach-rewrite' }, '“' + p.rewrite + '”') : null),
+      p.onRetry || p.onContinue ? h('div', { className: 'pg-row' },
+        p.onRetry ? h(Button, { variant: 'primary', onClick: p.onRetry }, p.retryLabel || 'Retry this moment') : null,
+        p.onContinue ? h(Button, { onClick: p.onContinue }, p.continueLabel || 'Continue') : null) : null);
+  }
+
+  var api = { Button: Button, Badge: Badge, TabBar: TabBar, EntryAction: EntryAction, LessonCard: LessonCard, SBIFrame: SBIFrame, ExampleCompare: ExampleCompare, KnowledgeCheck: KnowledgeCheck, ScenarioCard: ScenarioCard, PersonaHeader: PersonaHeader, ChatBubble: ChatBubble, ReplyChoices: ReplyChoices, HintCard: HintCard, RubricScore: RubricScore, CoachFeedback: CoachFeedback };
+  window.PracticeGym = Object.assign(window.PracticeGym || {}, api);
+})();
+
+</script>
+<script>
+(function () {
+  var G = window.PracticeGym, h = React.createElement, useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
+
+  // ---------- Content: scenarios (from the Scenario library) ----------
+  var LEVELS = ['', 'Warm-up', 'Realistic', 'Tough'];
+  var SCENARIOS = [
+    { id: 'P1', title: 'The late client report', persona: 'Priya Shah', role: 'CS analyst, 2 years on the team', short: 'CS analyst', lesson: 'SBI in four minutes',
+      opener: 'Hi {m}, you wanted to chat?', openerNote: 'sits down, laptop open',
+      publicFacts: "Priya's Northwind usage report was due Tuesday and arrived Thursday with no heads-up. The manager had to ask the client for an extension before their board meeting. It is her first late report this quarter.",
+      privateBg: "Northwind's admin changed their export format; you spent Monday rebuilding the dashboard and didn't want to 'bother' a new manager. You're afraid of looking incapable.",
+      levels: { 1: ['Apologise fast and offer to "work late".', 'Asked what got in the way.', 'Told "this keeps happening" or similar.'],
+                2: ['Apologise, then quietly blame the client.', 'The manager acknowledges the format change is real.', 'The manager dismisses the client issue.'],
+                3: ['"Other people miss deadlines too."', 'The manager stays on this one event and asks for your side twice.', 'The manager compares you to teammates.'] },
+      situation: "Priya (CS analyst) sent the Northwind usage report two days late with no heads-up. I had to ask the client for an extension before their board meeting. I'm talking to her tomorrow and I don't want to sound like I'm attacking her." },
+    { id: 'P2', title: 'Your former peer', persona: 'Marcus Webb', role: 'senior CSM, your peer until 3 months ago', short: 'Senior CSM', lesson: 'Behavior, not identity',
+      opener: "Hey. What's up?", openerNote: 'leans back, arms loose',
+      publicFacts: "In the last two team meetings Marcus cut off Jun (a new hire) mid-sentence three times and said \"we tried that already\" to her renewal idea. Jun asked the manager afterwards whether she should stop sharing ideas.",
+      privateBg: "You applied for the lead role the manager got. You believe you're protecting the team from rookie mistakes, and you see this feedback as power going to their head.",
+      levels: { 1: ['Joke it off: "We used to do this all the time."', 'The manager names the specific meeting moments and the effect on Jun.', 'The manager pulls rank.'],
+                2: ['"Are you serious? It\'s a meeting."', 'The manager acknowledges the change in your relationship directly.', 'The manager avoids the awkwardness.'],
+                3: ['Raise the promotion: "You got the job, fine, but..."', 'The manager stays calm and returns to the behavior.', 'The manager defends the promotion.'] },
+      situation: "Marcus, my former peer, cut off our new hire Jun three times in team meetings and dismissed her renewal idea. Jun asked me if she should stop sharing ideas. It's awkward because we were peers until I got promoted." },
+    { id: 'P3', title: 'The quiet slip', persona: 'Dana Okafor', role: 'onboarding specialist, usually thorough', short: 'Onboarding specialist', lesson: 'When they go quiet',
+      opener: 'Hi.', openerNote: 'sits, hands in lap, waits',
+      publicFacts: "Dana skipped the kickoff checklist for two new accounts this month; one client went live without SSO configured and escalated to the VP.",
+      privateBg: "You were given two extra accounts during a teammate's leave and were afraid to say you were overloaded.",
+      levels: { 1: ['Short answers: "Okay." "Sure."', 'The manager names the silence gently and waits.', 'The manager fills every pause.'],
+                2: ['Long silence, then "I know."', 'The manager asks an open question about workload.', 'The manager asks yes/no questions.'],
+                3: ['Silence for two turns ("..." only).', 'The manager says it is fine to think and offers to continue tomorrow.', 'The manager pushes for an answer.'] },
+      situation: "Dana skipped the kickoff checklist on two new accounts and one client went live without SSO and escalated. She's usually really thorough, and she tends to go quiet in hard conversations." },
+    { id: 'P5', title: '"Everyone does it"', persona: 'Sam Rivera', role: 'account manager, strong renewal numbers', short: 'Account manager', lesson: 'Responding to defensiveness',
+      opener: "Hey, what's going on? I've got a call in twenty.", openerNote: 'glances at phone',
+      publicFacts: "Sam logged 4 of his 15 customer calls in the CRM this month; renewal forecasts for his accounts were wrong twice, and finance had to redo the quarterly forecast.",
+      privateBg: "You think CRM logging is busywork and your renewal numbers prove you're fine. You're partly right that the team's logging is inconsistent.",
+      levels: { 1: ['"My numbers are fine though."', 'The manager connects logging to the forecast impact.', 'The manager argues about your numbers.'],
+                2: ['"Nobody else logs everything either."', 'The manager agrees the team standard needs fixing and returns to your part.', 'The manager defends the team.'],
+                3: ['Pull up data to prove your point.', 'The manager acknowledges the data and restates the specific impact calmly.', 'The manager escalates or threatens.'] },
+      situation: "Sam only logged 4 of 15 customer calls in the CRM this month and his renewal forecasts were wrong twice, so finance had to redo the forecast. He'll probably say his numbers are fine and nobody else logs everything." }
+  ];
+  var GOALS = ['Name the behavior and its impact', 'Ask for their perspective', 'Agree one next step together'];
+  var DIMS = ['Specificity', 'Behavior focus', 'Impact', 'Two-way dialogue', 'Handling reactions', 'Clarity', 'Forward focus', 'Respect'];
+  var RUBRIC = 'Specificity: 1 vague label ("you\'ve been unreliable") / 2 general topic, no instance / 3 names the instance but not when or what exactly / 4 exact instance and detail ("the client report due Tuesday came in Thursday")\n' +
+    'Behavior focus: 1 labels the person or guesses motives / 2 mostly behavior, one generalisation ("always", "pattern") / 3 behavior throughout, slightly loaded wording / 4 observable behavior only\n' +
+    'Impact: 1 none stated / 2 vague ("not great") / 3 concrete but late or partial / 4 concrete effect on work, customers or people, stated early\n' +
+    'Two-way dialogue: 1 no question; monologue / 2 closed or rhetorical questions only / 3 one genuine open question / 4 asks for their view and builds on the answer\n' +
+    'Handling reactions: 1 ignores, escalates or caves to the reaction / 2 notices it but moves on / 3 acknowledges and stays on topic / 4 acknowledges, explores the cause, keeps the conversation productive\n' +
+    'Clarity: 1 softened until it doesn\'t register / 2 message present but buried / 3 clear with some hedging / 4 clear, direct, unambiguous\n' +
+    'Forward focus: 1 no next step / 2 vague hope ("do better") / 3 a specific next step set by the manager / 4 a specific next step agreed together\n' +
+    'Respect: 1 threatening, sarcastic or demeaning / 2 one stinging remark / 3 courteous / 4 warm and respectful throughout';
+  var START_OPEN = { 1: 3, 2: 3, 3: 2 };
+
+  function first(s) { return s.split(' ')[0]; }
+
+  // ---------- Prompts (Lesson v4, Persona v5, Coach v5, Coach chat new) ----------
+  function portfolioJSON(p) {
+    return JSON.stringify({ name: p.name, role: p.role, industry: p.industry, direct_reports: p.reports, time_as_manager: p.tenure, priority_skill: 'Giving feedback', focus_dimension: p.focus, previous_scores: p.prev });
+  }
+  function lessonPrompt(p, sc, situation) {
+    return 'You are the lesson writer for Practice Gym, a practice app for first-time managers. You do NOT write the theory: an expert wrote the lesson skeleton. Your job is to fill its example slots so they come from this learner\'s world.\n\n' +
+      'Fill every slot:\n1. sbi: Situation, Behavior, Impact for the learner\'s own situation. Situation must say when and where. Behavior must be observable (something a camera could record). Impact must be a concrete consequence for work, customers or people. Add one open Question. Leave next_step empty: the learner agrees it with the employee.\n' +
+      '2. pairs: two weak/strong pairs. Each WEAK line must sound like a kind, well-meaning new manager and fail exactly one or two rubric dimensions; name them with the score. Never write a rude or cartoonish weak line. Each STRONG line fixes only those dimensions. Use the learner\'s industry vocabulary and names from the situation.\n' +
+      '3. check: one multiple-choice question with 3 options that tests the learner\'s focus_dimension. One correct; one that avoids; one that overreacts. One-sentence feedback per option, explaining why, without judging the learner.\n\n' +
+      'Rules: total reading time under 4 minutes (max 350 words across all text). Plain, warm, second person. No new frameworks, acronyms or theory beyond the skeleton.\n' +
+      'If the situation involves harassment, discrimination, safety or legal risk, return {"escalate": true, "reason": "..."} instead of a lesson.\n' +
+      'Return only JSON of exactly this shape: {"sbi":{"situation":"","behavior":"","impact":"","question":"","next_step":""},"pairs":[{"weak":"","fails":[{"dimension":"","score":1}],"strong":""}],"check":{"question":"","options":[{"id":"a","text":"","correct":true,"feedback":""}]}}\n\n' +
+      '<learner_portfolio>' + portfolioJSON(p) + '</learner_portfolio>\n<situation>' + JSON.stringify({ text: situation, timing: 'Tomorrow' }) + '</situation>\n' +
+      '<lesson_skeleton>{"lesson_id":"sbi-4min","objective":"Use Situation-Behavior-Impact to open a feedback conversation, then ask for the employee\'s view.","key_points":["Situation: when and where it happened","Behavior: what you observed, not what you assume","Impact: the concrete effect on work, customers or people","Then ask an open question and agree the next step together"]}</lesson_skeleton>\n<rubric>\n' + RUBRIC + '\n</rubric>';
+  }
+  function personaRules(p, sc, lvl) {
+    var L = sc.levels[lvl];
+    return 'You are playing ' + sc.persona + ', ' + sc.role + ', in a workplace role-play. A new manager named ' + p.name + ' is practising a feedback conversation with you. Stay in character for the whole scene.\n\n' +
+      '<what_the_manager_knows>' + sc.publicFacts + '</what_the_manager_knows>\n<your_private_background>' + sc.privateBg + '</your_private_background>\n' +
+      '<difficulty>' + lvl + ' ' + LEVELS[lvl] + '. First reaction: ' + L[0] + ' Opens up when: ' + L[1] + ' Shuts down when: ' + L[2] + '</difficulty>\n\n' +
+      'You already said: "' + sc.opener.replace('{m}', first(p.name)) + '" (' + sc.openerNote + '). Each message from me is the manager\'s next line plus the current state; continue from that state.\n\n' +
+      'How to behave:\n- React to what the manager actually SAID, not to what a good manager would say.\n' +
+      '- Update openness each turn, applying every rule that fits and then clamping to 1-5:\n  +1 the first time they describe a specific behavior (once per scene)\n  +1 when they acknowledge your feelings or a mistake of their own\n  +1 when they ask an open question about your view\n  -2 when they label you ("unreliable"), generalise ("always", "pattern"), threaten or compare you to others. This is your shut-down trigger: your next reply is short and guarded, even if they recover later in the same turn.\n' +
+      '- Reveal your private background only when openness reaches 4 AND the manager has asked an open question. At openness 1-2 give short, guarded answers.\n' +
+      '- Speak like a real employee: 1-3 sentences, contractions, no therapy-speak.\n- Never coach, hint, praise their technique or mention frameworks. You do not know this is a lesson.\n' +
+      '- If the manager is abusive or discriminatory, end the scene: "end": true.\n\n' +
+      'Return only JSON:\n{"reply": "...", "nonverbal": "<= 8 words of body language", "openness": n, "revealed": bool, "trigger": "which rule moved openness, or null", "end": bool}';
+  }
+  function transcriptText(p, sc, turns) {
+    var out = ['[Turn 0] ' + first(sc.persona) + ': ' + sc.opener.replace('{m}', first(p.name)) + ' (' + sc.openerNote + ')'];
+    turns.forEach(function (t, i) {
+      out.push('[Turn ' + (i + 1) + '] ' + first(p.name) + ': ' + t.manager);
+      if (t.reply) out.push(first(sc.persona) + ': ' + t.reply + (t.nonverbal ? ' (' + t.nonverbal + ')' : ''));
+    });
+    return out.join('\n');
+  }
+  function opennessTrace(lvl, turns) {
+    return JSON.stringify([{ turn: 0, openness: START_OPEN[lvl] }].concat(turns.filter(function (t) { return t.reply; }).map(function (t, i) { return { turn: i + 1, openness: t.openness, trigger: t.trigger || null, revealed: !!t.revealed }; })));
+  }
+  function coachPrompt(p, sc, lvl, turns) {
+    return 'You are the coach in Practice Gym. You score a new manager\'s feedback conversation against a rubric and give feedback they can use in their next attempt.\n\nmode = score:\n' +
+      '1. For each dimension, first name the rubric anchor (1-4) whose wording the evidence matches, then quote the manager\'s words (turn number) that justify the score. No quote, no score above 2. If the scene never reached a dimension, score null.\n' +
+      '2. Pick ONE strength: the highest-scoring moment, described by what they said.\n' +
+      '3. Pick ONE thing to try next: the lowest-scoring dimension, preferring the learner\'s focus_dimension on a tie. Explain the effect it had on the employee, using the persona\'s reply and openness change as evidence.\n' +
+      '4. Write one line the manager could say instead, in their own voice, using only facts stated in the transcript or scenario.\n5. Set retry_from_turn to the turn where that line belongs.\n' +
+      'Speak to the manager as "you". Describe their behavior, never their personality.\nMax 45 words each for strength and try_next.\n' +
+      '6. focus_dimension_delta: this score on the focus_dimension minus its previous score in the portfolio (a number, or null if either is missing).\n\n' +
+      'Return only JSON:\n{"scores":[{"dimension":"","score":1,"anchor":"","evidence":"","turn":1}],"strength":"","try_next":"","try_next_dimension":"","rewrite":"","retry_from_turn":1,"focus_dimension_delta":0}\n\n' +
+      '<learner_portfolio>' + portfolioJSON(p) + '</learner_portfolio>\n<scenario>' + JSON.stringify({ title: sc.title, employee: sc.persona, difficulty: lvl, facts: sc.publicFacts, goals: GOALS }) + '</scenario>\n<mode>score</mode>\n\n<rubric>\n' + RUBRIC + '\n</rubric>\n\n<transcript>\n' + transcriptText(p, sc, turns) + '\n</transcript>\n\n<persona_openness>' + opennessTrace(lvl, turns) + '</persona_openness>';
+  }
+  function hintPrompt(p, sc, lvl, turns) {
+    return 'You are the coach in Practice Gym. mode = hint. A new manager is mid-way through a feedback role-play and asked for a hint.\nGive ONE sentence (max 25 words) pointing at their next rubric move. Never give a full script or the exact words to say. Speak to them as "you".\n\n<rubric>\n' + RUBRIC + '\n</rubric>\n<scenario>' + JSON.stringify({ title: sc.title, employee: sc.persona, goals: GOALS }) + '</scenario>\n<transcript>\n' + transcriptText(p, sc, turns) + '\n</transcript>\n<persona_openness>' + opennessTrace(lvl, turns) + '</persona_openness>\n\nReply with the one sentence only.';
+  }
+  function scaffoldPrompt(p, sc, lvl, turns, feedback) {
+    return 'ROLE: Adaptive practice coach for Practice Gym, a practice app for first-time managers.\nPERSONA: Patient coach who adjusts how much help to give to how the manager just performed.\n\n' +
+      'You receive the learner\'s context (from their portfolio), the scenario, the transcript, and PERFORMANCE DATA from the scoring coach (8 rubric dimensions, 1-4).\n\n' +
+      'SCAFFOLDING DECISION RULES. First find the LOWEST scored dimension (ignore nulls; on a tie, prefer the learner\'s focus_dimension):\n' +
+      '- IF lowest score = 1 -> level "LOW" (needs significant support): give a filled-in Situation-Behavior-Impact-Question template for THIS scenario, one worked example of what to say at the turn to retry (2-4 sentences), and a guided retry: exactly 3 reply options for that turn (one strong, one that avoids, one that overreacts) at the same difficulty.\n' +
+      '- IF lowest score = 2 -> level "MEDIUM" (developing): 2-3 targeted suggestions, each quoting the manager\'s own words and naming the dimension; plus a fill-in template for the weak move only, with blanks (___) the manager completes. Retry at the same difficulty, free text. No full script.\n' +
+      '- IF lowest score is 3 or 4 -> level "HIGH" (demonstrated): one sentence of specific validation (what they said and why it worked), 2-3 reflection questions with no answers, and recommend the next difficulty level (max 3).\n\n' +
+      'Rules: decide the level first and show the reason. Use only facts from the transcript and scenario. Max 120 words across all guidance text. Speak to the manager as "you". Describe behavior, never personality. No emoji.\n\n' +
+      'OUTPUT: return only JSON:\n{"decision": {"lowest_dimension": "", "lowest_score": 0, "level": "LOW|MEDIUM|HIGH", "reason": ""},\n "guidance": {\n   LOW:    "template": {"situation": "", "behavior": "", "impact": "", "question": ""}, "worked_example": "", "reply_options": [{"text": "", "kind": "strong|avoid|overreact"}]\n   MEDIUM: "suggestions": ["", ""], "template": "sentence with ___ blanks"\n   HIGH:   "validation": "", "reflection_questions": ["", ""]\n },\n "next_step": {"action": "guided_retry|retry|level_up", "retry_from_turn": 0, "difficulty": 1}}\n\n' +
+      'FEW-SHOT EXAMPLE (LOW), from a different scenario:\nPerformance data: Behavior focus 1 ("You\'re always negative in meetings", turn 1), others 2-3.\nDecision: lowest = Behavior focus 1 -> LOW, because the opening labeled the person instead of describing one meeting.\nGuidance: template {"situation": "In Monday\'s renewal meeting,", "behavior": "you said \'we tried that already\' before Jun finished her idea,", "impact": "and afterwards she asked me if she should stop sharing ideas.", "question": "How did that meeting look from your side?"}, worked_example "Marcus, I want to talk about Monday\'s renewal meeting. When Jun was sharing her check-in idea, you said \'we tried that already\' before she finished. Afterwards she asked me whether she should stop sharing ideas. How did that meeting look from your side?", reply_options [strong: the worked example\'s first two sentences; avoid: "It\'s no big deal, just maybe be a bit nicer in meetings?"; overreact: "You need to stop being so negative or this will go on your review."]\nNext step: {"action": "guided_retry", "retry_from_turn": 1, "difficulty": 1}\n\n' +
+      '<learner_context>' + portfolioJSON(p) + '</learner_context>\n<scenario>' + JSON.stringify({ title: sc.title, employee: sc.persona, difficulty: lvl, facts: sc.publicFacts }) + '</scenario>\n<transcript>\n' + transcriptText(p, sc, turns) + '\n</transcript>\n<performance_data>' + JSON.stringify(feedback) + '</performance_data>';
+  }
+  function coachChatRules(p, sc, lvl, turns, attempt, history) {
+    return 'You are the coach in Practice Gym, talking with ' + p.name + ', a first-time manager, right after their practice conversation. They will ask follow-up questions about your feedback.\n\n' +
+      '<learner_portfolio>' + portfolioJSON(p) + '</learner_portfolio>\n<scenario>' + JSON.stringify({ title: sc.title, employee: sc.persona, difficulty: LEVELS[lvl], facts: sc.publicFacts, goals: GOALS }) + '</scenario>\n<rubric>\n' + RUBRIC + '\n</rubric>\n' +
+      '<transcript>\n' + transcriptText(p, sc, turns) + '\n</transcript>\n<persona_openness>' + opennessTrace(lvl, turns) + '</persona_openness>\n<your_feedback>' + JSON.stringify(attempt) + '</your_feedback>\n' +
+      (history ? '<earlier_attempts>' + history + '</earlier_attempts>\n' : '') +
+      '\nHow to answer:\n- Answer the question they ask, grounded in their transcript. Quote their words with the turn number when it helps.\n' +
+      '- Keep it short: 2 to 5 sentences, or up to 3 bullets. One idea at a time.\n' +
+      '- When they ask how to say something, give one line they could say in their own voice, using only facts from the scenario.\n' +
+      '- Stay consistent with your scores. If they disagree with a score, explain the rubric anchor; change your view only if they point to words in the transcript you missed, and say so plainly.\n' +
+      '- Describe behavior, never personality. Warm and direct. No emoji, no exclamation marks.\n' +
+      '- If they want to practise, suggest using "Retry from turn N" in the app instead of role-playing the employee yourself.\n' +
+      '- If they ask about something outside giving feedback at work (legal questions, HR investigations, medical issues), say briefly that you can\'t advise on that and suggest HR or the right person.\n' +
+      '- Plain text only: no markdown headings, no bold. Use "- " for bullets.';
+  }
+
+  // ---------- AI plumbing ----------
+  var LOG = [];
+  function errCopy(e) {
+    var c = e && e.code;
+    if (c === 'not_granted' || c === 'sampling_disabled' || c === 'not_declared' || c === 'capability_disabled') return 'The AI isn\'t connected. Open the testing link your facilitator sent you.';
+    if (c === 'bad_key') return 'The AI key was not accepted. Ask your facilitator for a new testing link.';
+    if (c === 'bad_model') return 'The AI model name is not available. Ask your facilitator to check the AI settings.';
+    if (c === 'network') return 'Could not reach the AI. Check your internet connection, then try again.';
+    if (c === 'rate_limited') return 'Too many requests right now. Wait a minute, then try again.';
+    if (c === 'session_expired') return 'Your session has expired. Reload the page, then retry.';
+    if (c === 'invalid_json') return 'The reply came back in the wrong format. Try again.';
+    if (c === 'refused') return 'Claude declined that message. Try rewording it.';
+    if (c === 'cancelled') return 'Stopped.';
+    return 'Something went wrong reaching Claude. Try again.';
+  }
+  function useLog() { var s = useState(0); return [LOG, function () { s[1](function (n) { return n + 1; }); }]; }
+
+  // ---------- Small UI parts ----------
+  function Steps(p) {
+    var items = [['setup', 'Set up'], ['learn', 'Learn'], ['practice', 'Practice'], ['coach', 'Coach']];
+    return h('nav', { className: 'lp-steps', 'aria-label': 'Steps' }, items.map(function (it, i) {
+      var can = p.allowed.indexOf(it[0]) >= 0;
+      return h('button', { key: it[0], type: 'button', className: 'lp-step', 'aria-current': p.step === it[0] ? 'step' : undefined, disabled: !can, onClick: function () { p.go(it[0]); } },
+        h('span', { className: 'lp-step-n' }, i + 1), it[1]);
+    }));
+  }
+  function Thinking(p) { return h('div', { className: 'lp-thinking', role: 'status' }, h('span', { className: 'lp-dots', 'aria-hidden': true }, h('i'), h('i'), h('i')), p.children || 'Thinking'); }
+  function Err(p) { return p.msg ? h('div', { className: 'lp-err', role: 'alert' }, p.msg, p.onRetry ? h(G.Button, { variant: 'ghost', onClick: p.onRetry }, 'Try again') : null) : null; }
+  function Seg(p) {
+    return h('div', { className: 'lp-seg', role: 'group', 'aria-label': p.label }, p.options.map(function (o) {
+      return h('button', { key: o[0], type: 'button', 'aria-pressed': p.value === o[0], onClick: function () { p.onChange(o[0]); } }, o[1]);
+    }));
+  }
+
+  var LEVEL_COPY = { LOW: ['Needs support', 'A full template, a worked example and a guided retry.'], MEDIUM: ['Developing', 'Targeted tips and a partial template; you write the line.'], HIGH: ['Demonstrated', 'Reflection questions, then a harder version.'] };
+  function NextStep(p) {
+    var s = p.scaf;
+    if (s.status === 'idle') return null;
+    if (s.status === 'loading') return h('section', { className: 'pg-card' }, h(Thinking, null, 'Choosing how much support to give you next'));
+    if (s.status === 'error') return h('section', { className: 'pg-card' }, h(Err, { msg: s.msg, onRetry: p.onRerun }));
+    var d = s.data, g = d.guidance || {}, lev = s.level, copy = LEVEL_COPY[lev] || ['', ''];
+    var body;
+    if (lev === 'LOW') {
+      var t = g.template || {};
+      body = h('div', { className: 'lp-stack' },
+        h(G.SBIFrame, { situation: t.situation, behavior: t.behavior, impact: t.impact, question: t.question }),
+        g.worked_example ? h('div', { className: 'pg-ex pg-ex-strong' }, h('span', { className: 'pg-label' }, 'Worked example'), h('q', null, g.worked_example)) : null,
+        h('div', { className: 'lp-row' }, h(G.Button, { variant: 'primary', onClick: function () { p.onRetry(s.retry, (g.reply_options || []).slice(0, 3), ''); } }, 'Guided retry from turn ' + s.retry)));
+    } else if (lev === 'MEDIUM') {
+      body = h('div', { className: 'lp-stack' },
+        h('ul', { className: 'lp-tips' }, (g.suggestions || []).map(function (x, i) { return h('li', { key: i }, x); })),
+        g.template ? h('div', { className: 'pg-hint' }, h('span', { className: 'pg-label' }, 'Fill in the blanks'), g.template) : null,
+        h('div', { className: 'lp-row' }, h(G.Button, { variant: 'primary', onClick: function () { p.onRetry(s.retry, null, g.template || ''); } }, 'Retry from turn ' + s.retry + ' with the template')));
+    } else {
+      body = h('div', { className: 'lp-stack' },
+        g.validation ? h('p', { className: 'pg-p' }, g.validation) : null,
+        h('div', { className: 'pg-label pg-muted' }, 'Reflect before you level up'),
+        h('div', { className: 'lp-stack', style: { gap: 8 } }, (g.reflection_questions || []).map(function (x, i) { return h('button', { key: i, type: 'button', className: 'pg-chip lp-reflect', onClick: function () { p.onAsk('My answer to "' + x + '": '); } }, x); })),
+        h('div', { className: 'lp-row' }, s.difficulty > p.lvl ? h(G.Button, { variant: 'primary', onClick: function () { p.onLevelUp(s.difficulty); } }, 'Level up to ' + LEVELS[s.difficulty]) : h(G.Button, { variant: 'primary', onClick: function () { p.onLevelUp(p.lvl); } }, 'Try the scene again')));
+    }
+    return h('section', { className: 'pg-card lp-stack lp-next' },
+      h('div', { className: 'lp-row-between' }, h('h2', { className: 'pg-h2' }, 'Your next step'), h('span', { className: 'lp-level lp-level-' + lev.toLowerCase() }, lev + ' · ' + copy[0])),
+      h('p', { className: 'pg-p pg-muted lp-small' }, (d.decision && d.decision.reason ? d.decision.reason + ' ' : '') + copy[1]),
+      body);
+  }
+
+  // ---------- App ----------
+  function App() {
+    var sampleRef = useRef(undefined);
+    var av = useState('checking'), aiState = av[0], setAi = av[1];
+    useEffect(function () {
+      var done = false;
+      if (!window.claude || !window.claude.use) { setAi('none'); return; }
+      window.claude.use('sample').then(function (s) { if (done) return; sampleRef.current = s; setAi(s ? 'ready' : 'none'); }).catch(function () { setAi('none'); });
+      return function () { done = true; };
+    }, []);
+    var lg = useLog(), log = lg[0], bump = lg[1];
+    var sl = useState(false), showLog = sl[0], setShowLog = sl[1];
+
+    function call(kind, input, opts, json) {
+      var s = sampleRef.current;
+      var entry = { kind: kind, tier: opts.modelTier || 'default', input: typeof input === 'string' ? input : input.map(function (t) { return t.role.toUpperCase() + ':\n' + t.content; }).join('\n\n'), output: null, at: new Date().toLocaleTimeString() };
+      LOG.unshift(entry); if (LOG.length > 40) LOG.pop(); bump();
+      if (!s) { entry.output = 'Live AI unavailable'; bump(); return Promise.reject({ code: 'not_granted' }); }
+      var pr = json ? s.json(input, opts) : s(input, opts);
+      return pr.then(function (r) { entry.output = json ? JSON.stringify(r, null, 2) : r.text; bump(); return r; }, function (e) { entry.output = 'Error: ' + (e && e.code) + (e && e.text ? '\n' + e.text : ''); bump(); throw e; });
+    }
+
+    var st = useState('setup'), step = st[0], setStep = st[1];
+    useEffect(function () { try { window.scrollTo(0, 0); } catch (e) {} }, [step]);
+    var pf = useState({ name: 'Jordan', role: 'Customer Success team lead', industry: 'B2B software (customer success)', reports: 5, tenure: '3 months', focus: 'Two-way dialogue', prev: { 'Two-way dialogue': 1, 'Specificity': 2 } }), prof = pf[0], setProf = pf[1];
+    var sci = useState('P1'), scId = sci[0], setScId = sci[1];
+    var lv = useState(1), lvl = lv[0], setLvl = lv[1];
+    var fast = useState(true), fastPersona = fast[0], setFast = fast[1];
+    var sc = SCENARIOS.filter(function (s) { return s.id === scId; })[0];
+
+    // lesson
+    var ls = useState({ status: 'idle' }), lesson = ls[0], setLesson = ls[1];
+    var lsit = useState(sc.situation), situation = lsit[0], setSituation = lsit[1];
+    var lstep = useState(0), lessonStep = lstep[0], setLessonStep = lstep[1];
+    useEffect(function () { setSituation(sc.situation); setLesson({ status: 'idle' }); setLessonStep(0); }, [scId]);
+    function buildLesson() {
+      setLesson({ status: 'loading' }); setLessonStep(0);
+      call('Lesson Generator', lessonPrompt(prof, sc, situation), { modelTier: 'default', cache: false }, true).then(function (j) {
+        if (j && j.escalate) setLesson({ status: 'escalate', reason: j.reason || '' });
+        else if (j && j.sbi && j.pairs && j.check) setLesson({ status: 'ready', data: j });
+        else setLesson({ status: 'error', msg: 'The lesson came back incomplete. Try again.' });
+      }, function (e) { setLesson({ status: 'error', msg: errCopy(e) }); });
+    }
+
+    // scene
+    var tu = useState([]), turns = tu[0], setTurns = tu[1];
+    var dr = useState(''), draft = dr[0], setDraft = dr[1];
+    var bz = useState(null), busy = bz[0], setBusy = bz[1];
+    var er = useState(''), err = er[0], setErr = er[1];
+    var hn = useState(null), hint = hn[0], setHint = hn[1];
+    var en = useState(false), ended = en[0], setEnded = en[1];
+    var ctlRef = useRef(null);
+    var chatEnd = useRef(null);
+    useEffect(function () { if (chatEnd.current && chatEnd.current.scrollIntoView) chatEnd.current.scrollIntoView({ block: 'nearest' }); }, [turns.length, busy, hint]);
+
+    function resetScene() { setTurns([]); setDraft(''); setHint(null); setEnded(false); setErr(''); }
+    var openness = turns.length && turns[turns.length - 1].reply ? turns[turns.length - 1].openness : START_OPEN[lvl];
+
+    function personaInput(allTurns) {
+      var arr = [];
+      var stateFor = function (i) { var o = i === 0 ? START_OPEN[lvl] : allTurns[i - 1].openness; var rev = allTurns.slice(0, i).some(function (t) { return t.revealed; }); return JSON.stringify({ openness: o, turn: i, revealed: rev }); };
+      allTurns.forEach(function (t, i) {
+        var u = (i === 0 ? personaRules(prof, sc, lvl) + '\n\n' : '') + 'Manager (turn ' + (i + 1) + '): ' + t.manager + '\nCurrent state: ' + stateFor(i);
+        arr.push({ role: 'user', content: u });
+        if (t.reply) arr.push({ role: 'assistant', content: JSON.stringify({ reply: t.reply, nonverbal: t.nonverbal, openness: t.openness, revealed: !!t.revealed, trigger: t.trigger || null, end: false }) });
+      });
+      return arr;
+    }
+    function send(text) {
+      var line = (text || draft).trim(); if (!line || busy) return;
+      var next = turns.concat([{ manager: line }]);
+      setTurns(next); setDraft(''); setHint(null); setErr(''); setGuided(null); setBusy('persona');
+      var ctl = new AbortController(); ctlRef.current = ctl;
+      call('Employee Persona', personaInput(next), { modelTier: fastPersona ? 'quick' : 'default', cache: false, signal: ctl.signal }, true).then(function (j) {
+        var o = Math.max(1, Math.min(5, Math.round(Number(j && j.openness) || openness)));
+        var t = { manager: line, reply: String((j && j.reply) || '...'), nonverbal: j && j.nonverbal ? String(j.nonverbal) : '', openness: o, trigger: j && j.trigger ? String(j.trigger) : null, revealed: !!(j && j.revealed) };
+        setTurns(next.slice(0, -1).concat([t])); setBusy(null);
+        if (j && j.end) setEnded(true);
+      }, function (e) { setTurns(turns); setDraft(line); setBusy(null); if (e.code !== 'cancelled') setErr(errCopy(e)); });
+    }
+    function askHint() {
+      if (busy) return; setBusy('hint'); setErr('');
+      call('Coach · hint', hintPrompt(prof, sc, lvl, turns), { modelTier: 'quick', cache: false }, false).then(function (r) { setHint(r.text.trim()); setBusy(null); }, function (e) { setBusy(null); setErr(errCopy(e)); });
+    }
+    function stop() { if (ctlRef.current) ctlRef.current.abort(); }
+
+    // coaching
+    var at = useState([]), attempts = at[0], setAttempts = at[1];
+    var cs = useState({ status: 'idle' }), coach = cs[0], setCoach = cs[1];
+    var ch = useState([]), chat = ch[0], setChat = ch[1];
+    var cq = useState(''), q = cq[0], setQ = cq[1];
+    var cb = useState(false), chatBusy = cb[0], setChatBusy = cb[1];
+    var cstream = useState(''), streamText = cstream[0], setStream = cstream[1];
+    var chatCtl = useRef(null);
+    var sf = useState({ status: 'idle' }), scaf = sf[0], setScaf = sf[1];
+    var gc = useState(null), guided = gc[0], setGuided = gc[1];
+
+    function getCoaching() {
+      if (!turns.filter(function (t) { return t.reply; }).length) return;
+      setStep('coach'); setCoach({ status: 'loading' }); setScaf({ status: 'idle' }); setChat([]); setStream('');
+      var done = turns.filter(function (t) { return t.reply; });
+      call('Coach · score', coachPrompt(prof, sc, lvl, done), { modelTier: 'default', cache: false }, true).then(function (j) {
+        if (!j || !Array.isArray(j.scores)) { setCoach({ status: 'error', msg: 'The feedback came back incomplete. Try again.' }); return; }
+        var scores = DIMS.map(function (d) { var x = j.scores.filter(function (s) { return s.dimension === d; })[0] || {}; var sv = x.score == null ? null : Math.max(1, Math.min(4, Math.round(Number(x.score)))); return { name: d, score: sv, focus: d === prof.focus, evidence: [x.anchor ? 'Anchor ' + x.anchor : null, x.evidence ? (x.turn ? 'Turn ' + x.turn + ': ' : '') + x.evidence : null].filter(Boolean).join(' · ') }; });
+        var total = scores.reduce(function (a, s) { return a + (s.score || 0); }, 0);
+        var focusScore = (scores.filter(function (s) { return s.name === prof.focus; })[0] || {}).score;
+        var prevFocus = prof.prev[prof.focus];
+        var a = { n: attempts.length + 1, scenario: sc.title, level: LEVELS[lvl], scores: scores, total: total, strength: String(j.strength || ''), try_next: String(j.try_next || ''), dim: j.try_next_dimension || '', rewrite: String(j.rewrite || ''), retry: Math.max(1, Math.min(done.length, Number(j.retry_from_turn) || 1)), focusScore: focusScore, prevFocus: prevFocus, delta: (focusScore != null && prevFocus != null) ? focusScore - prevFocus : null, turns: done, raw: j };
+        setAttempts(attempts.concat([a]));
+        if (focusScore != null) { var np = Object.assign({}, prof.prev); np[prof.focus] = focusScore; setProf(Object.assign({}, prof, { prev: np })); }
+        setCoach({ status: 'ready' });
+        runScaffold(a, done);
+      }, function (e) { setCoach({ status: 'error', msg: errCopy(e) }); });
+    }
+    var cur = attempts[attempts.length - 1];
+    function feedbackOf(a) { return { scores: a.scores.map(function (s) { return { dimension: s.name, score: s.score, evidence: s.evidence }; }), total: a.total, strength: a.strength, try_next: a.try_next, rewrite: a.rewrite, retry_from_turn: a.retry, focus_dimension: prof.focus }; }
+    function runScaffold(a, done) {
+      setScaf({ status: 'loading' });
+      call('Adaptive scaffolding', scaffoldPrompt(prof, sc, lvl, done, feedbackOf(a)), { modelTier: 'default', cache: false }, true).then(function (j) {
+        if (!j || !j.decision || !j.guidance) { setScaf({ status: 'error', msg: 'The next-step guidance came back incomplete. Try again.' }); return; }
+        var lev = String(j.decision.level || '').toUpperCase();
+        var ns = j.next_step || {};
+        setScaf({ status: 'ready', level: lev, data: j, retry: Math.max(1, Math.min(done.length, Number(ns.retry_from_turn) || a.retry)), difficulty: Math.max(1, Math.min(3, Number(ns.difficulty) || lvl)) });
+      }, function (e) { setScaf({ status: 'error', msg: errCopy(e) }); });
+    }
+    function retryAt(n, options, prefill) {
+      var keep = cur.turns.slice(0, n - 1);
+      setTurns(keep); setHint(null); setEnded(false); setErr(''); setDraft(prefill || ''); setGuided(options || null); setStep('practice');
+    }
+    function levelUp(d) { setLvl(d); resetScene(); setGuided(null); setStep('practice'); }
+    function retryFrom(a) {
+      var keep = a.turns.slice(0, a.retry - 1);
+      setTurns(keep); setHint(null); setEnded(false); setErr(''); setDraft(''); setGuided(null); setStep('practice');
+    }
+    function historyText() {
+      return attempts.slice(0, -1).map(function (a) { return 'Attempt ' + a.n + ': ' + a.total + '/32, ' + prof.focus + ' ' + a.focusScore + '/4'; }).join('; ');
+    }
+    function askCoach(text) {
+      var question = (text || q).trim(); if (!question || chatBusy || !cur) return;
+      var hist = chat.concat([{ role: 'user', content: question }]);
+      setChat(hist); setQ(''); setChatBusy(true); setStream('');
+      var feedback = Object.assign(feedbackOf(cur), { focus_dimension_delta: cur.delta, next_step_guidance: scaf.status === 'ready' ? scaf.data : null });
+      var recent = hist.slice(-12); while (recent.length && recent[0].role !== 'user') recent.shift();
+      var input = [{ role: 'user', content: coachChatRules(prof, sc, lvl, cur.turns, feedback, historyText()) + '\n\nThe manager\'s questions follow.' }].concat(recent);
+      var ctl = new AbortController(); chatCtl.current = ctl;
+      call('Coach · conversation', input, { modelTier: 'default', cache: false, signal: ctl.signal, onText: function (u) { setStream(u.text); } }, false).then(function (r) {
+        setChat(hist.concat([{ role: 'assistant', content: r.text.trim() }])); setStream(''); setChatBusy(false);
+      }, function (e) {
+        var keep = e && e.text ? [{ role: 'assistant', content: e.text.trim() + (e.code === 'cancelled' ? ' [stopped]' : ' [interrupted]') }] : [];
+        setChat(hist.concat(keep)); setStream(''); setChatBusy(false);
+        if (e.code !== 'cancelled') setChat(hist.concat(keep).concat([{ role: 'assistant', content: errCopy(e), error: true }]));
+      });
+    }
+    function suggestions() {
+      if (!cur) return [];
+      var low = cur.scores.filter(function (s) { return s.score != null; }).sort(function (a, b) { return a.score - b.score; })[0];
+      var out = [];
+      if (low) out.push('Why did I get ' + low.score + '/4 on ' + low.name + '?');
+      out.push('What would a 4/4 on ' + prof.focus + ' look like here?');
+      out.push('What should I say if ' + first(sc.persona) + ' gets defensive?');
+      out.push('How do I say the next step without sounding bossy?');
+      return out;
+    }
+
+    // ---------- views ----------
+    var allowed = ['setup', 'learn', 'practice'].concat(attempts.length ? ['coach'] : []);
+    var aiBanner = aiState === 'none' ? h('div', { className: 'lp-err', role: 'alert' }, 'The AI isn\'t connected yet, so the buttons that ask the AI won\'t work. Open the testing link your facilitator sent you, or ask them to connect it under “AI not connected” at the bottom right.') : null;
+
+    var view;
+    if (step === 'setup') {
+      view = h('div', { className: 'lp-stack' },
+        h('section', { className: 'pg-card lp-stack' },
+          h('div', { className: 'lp-row-between' }, h('h2', { className: 'pg-h2' }, 'You are the manager'), h('span', { className: 'pg-muted lp-small' }, 'From your portfolio')),
+          h('div', { className: 'lp-grid2' },
+            h('label', { className: 'lp-field', htmlFor: 'lp-name' }, h('span', null, 'Your name'), h('input', { id: 'lp-name', className: 'lp-input', value: prof.name, onChange: function (e) { setProf(Object.assign({}, prof, { name: e.target.value || 'Jordan' })); } })),
+            h('label', { className: 'lp-field', htmlFor: 'lp-role' }, h('span', null, 'Your role'), h('input', { id: 'lp-role', className: 'lp-input', value: prof.role, onChange: function (e) { setProf(Object.assign({}, prof, { role: e.target.value })); } }))),
+          h('p', { className: 'pg-p lp-small' }, h('b', null, 'Focus area: ' + prof.focus), h('span', { className: 'pg-muted' }, ' · last score ' + (prof.prev[prof.focus] != null ? prof.prev[prof.focus] + '/4' : 'none') + ' · ' + prof.reports + ' reports · ' + prof.tenure + ' as a manager'))),
+        h('section', { className: 'lp-stack' },
+          h('h2', { className: 'pg-h2' }, 'Pick a situation'),
+          h('div', { className: 'lp-cards' }, SCENARIOS.map(function (s) {
+            var on = s.id === scId;
+            return h('button', { key: s.id, type: 'button', className: 'lp-scn', 'aria-pressed': on, onClick: function () { setScId(s.id); resetScene(); } },
+              h('span', { className: 'pg-label pg-muted' }, s.persona + ' · ' + s.short),
+              h('span', { className: 'lp-scn-title' }, s.title),
+              h('span', { className: 'lp-small pg-muted' }, s.publicFacts));
+          }))),
+        h('section', { className: 'pg-card lp-stack' },
+          h('div', { className: 'lp-row-between' }, h('h2', { className: 'pg-h2' }, 'Difficulty'), h(Seg, { label: 'Difficulty', value: lvl, onChange: function (v) { setLvl(v); resetScene(); }, options: [[1, 'Warm-up'], [2, 'Realistic'], [3, 'Tough']] })),
+          h('p', { className: 'pg-p lp-small' }, h('b', null, first(sc.persona) + '\'s first reaction: '), sc.levels[lvl][0], lvl === 3 ? h('span', { className: 'pg-muted' }, ' The openness meter is hidden at Tough.') : null),
+          h('label', { className: 'lp-check', htmlFor: 'lp-fast' }, h('input', { id: 'lp-fast', type: 'checkbox', checked: fastPersona, onChange: function (e) { setFast(e.target.checked); } }), h('span', null, 'Faster replies from ' + first(sc.persona) + ' (uses the quick model; uncheck for the deeper, slower one used in testing)'))),
+        h('div', { className: 'lp-row' },
+          h(G.Button, { variant: 'primary', onClick: function () { setStep('learn'); } }, 'Start with the 4-minute lesson'),
+          h(G.Button, { onClick: function () { setStep('practice'); } }, 'Skip to practice')));
+    }
+
+    if (step === 'learn') {
+      var L = lesson.data;
+      var body;
+      if (lesson.status === 'idle' || lesson.status === 'error') body = h('div', { className: 'lp-stack' },
+        h('label', { className: 'lp-field', htmlFor: 'lp-sit' }, h('span', null, 'What happened (the lesson is built from this)'), h('textarea', { id: 'lp-sit', className: 'pg-textarea', rows: 4, value: situation, onChange: function (e) { setSituation(e.target.value); } })),
+        h(Err, { msg: lesson.msg }),
+        h('div', { className: 'lp-row' }, h(G.Button, { variant: 'primary', onClick: buildLesson, disabled: aiState !== 'ready' }, 'Build my lesson'), h(G.Button, { onClick: function () { setStep('practice'); } }, 'Skip to practice')));
+      if (lesson.status === 'loading') body = h(Thinking, null, 'Writing your lesson from your situation (usually 20 to 60 seconds)');
+      if (lesson.status === 'escalate') body = h('div', { className: 'lp-stack' }, h(G.HintCard, { label: 'This needs HR, not a practice lesson' }, lesson.reason), h('div', { className: 'lp-row' }, h(G.Button, { onClick: function () { setLesson({ status: 'idle' }); } }, 'Edit the situation')));
+      if (lesson.status === 'ready') {
+        var pages = [
+          h('div', { key: 0, className: 'lp-stack' }, h('h2', { className: 'pg-h2' }, 'Three parts, then a question'), h('p', { className: 'pg-p' }, 'Here is your situation in that shape. You will agree the next step together with ' + first(sc.persona) + ', so it is left open.'),
+            h(G.SBIFrame, { situation: L.sbi.situation, behavior: L.sbi.behavior, impact: L.sbi.impact, question: L.sbi.question, nextStep: '' })),
+          h('div', { key: 1, className: 'lp-stack' }, h('div', { className: 'lp-row' }, h('h2', { className: 'pg-h2' }, 'Weak vs. strong'), h(G.Badge, { tone: 'amber' }, 'From your situation')),
+            (L.pairs || []).slice(0, 2).map(function (pr, i) { var f = (pr.fails || []).map(function (x) { return x.dimension + ' ' + x.score + '/4'; }).join(', '); return h(G.ExampleCompare, { key: i, weak: pr.weak, strong: pr.strong, weakNote: f ? 'Fails: ' + f : null }); })),
+          h('div', { key: 2, className: 'lp-stack' }, h(G.KnowledgeCheck, { question: L.check.question, correctId: ((L.check.options || []).filter(function (o) { return o.correct; })[0] || {}).id, options: (L.check.options || []).map(function (o, i) { return { id: o.id || String(i), text: o.text, feedback: o.feedback }; }) }))
+        ];
+        body = h('div', { className: 'lp-stack' },
+          h('div', { className: 'pg-steps', 'aria-label': 'Lesson step ' + (lessonStep + 1) + ' of 3' }, [0, 1, 2].map(function (i) { return h('i', { key: i, className: i <= lessonStep ? 'on' : '' }); })),
+          pages[lessonStep],
+          h('div', { className: 'lp-row' },
+            lessonStep > 0 ? h(G.Button, { onClick: function () { setLessonStep(lessonStep - 1); } }, 'Back') : null,
+            lessonStep < 2 ? h(G.Button, { variant: 'primary', onClick: function () { setLessonStep(lessonStep + 1); } }, 'Next') : h(G.Button, { variant: 'primary', onClick: function () { setStep('practice'); } }, 'Practice with ' + first(sc.persona)),
+            h(G.Button, { variant: 'ghost', onClick: buildLesson }, 'Rebuild lesson')));
+      }
+      view = h('div', { className: 'lp-stack' },
+        h(G.LessonCard, { minutes: 4, skill: 'Giving feedback', personalized: lesson.status === 'ready' ? 'situation' : null, title: sc.lesson, summary: 'Built live from your situation and your focus area, ' + prof.focus + '.' }),
+        h('section', { className: 'pg-card' }, body));
+    }
+
+    if (step === 'practice') {
+      var draftLine = lesson.status === 'ready' && turns.length === 0 ? [lesson.data.sbi.situation, lesson.data.sbi.behavior, lesson.data.sbi.impact, lesson.data.sbi.question].filter(Boolean).join(' ') : null;
+      var replied = turns.filter(function (t) { return t.reply; }).length;
+      view = h('div', { className: 'lp-stack' },
+        h(G.ScenarioCard, { title: sc.title, persona: sc.persona, role: sc.role, difficulty: lvl, reaction: sc.levels[lvl][0].replace(/\.$/, ''), situation: sc.publicFacts }),
+        h('div', { className: 'lp-goals' }, GOALS.map(function (g, i) { return h('span', { key: i, className: 'lp-goal' + (i === 1 ? ' is-focus' : '') }, (i + 1) + '. ' + g + (i === 1 ? ' · your focus' : '')); })),
+        h('section', { className: 'lp-chatbox' },
+          h('div', { className: 'lp-chathead' }, h(G.PersonaHeader, { name: sc.persona, role: sc.short, openness: openness, showMeter: lvl !== 3 })),
+          h('div', { className: 'lp-chatlog', 'aria-live': 'polite' },
+            h('div', { className: 'pg-chat' },
+              h(G.ChatBubble, { from: 'persona', note: sc.openerNote }, sc.opener.replace('{m}', first(prof.name))),
+              turns.map(function (t, i) {
+                return h(React.Fragment, { key: i },
+                  h(G.ChatBubble, { from: 'manager' }, t.manager),
+                  t.reply ? h(G.ChatBubble, { from: 'persona', note: t.nonverbal || null }, t.reply) : null,
+                  t.reply && showLog ? h('div', { className: 'lp-trace' }, 'Openness ' + t.openness + '/5' + (t.trigger ? ' · ' + t.trigger : '') + (t.revealed ? ' · revealed' : '')) : null);
+              }),
+              busy === 'persona' ? h(Thinking, null, first(sc.persona) + ' is replying') : null,
+              hint ? h(G.ChatBubble, { from: 'coach', who: 'Coach · hint' }, hint) : null,
+              busy === 'hint' ? h(Thinking, null, 'Coach is thinking') : null,
+              ended ? h('div', { className: 'lp-trace' }, first(sc.persona) + ' ended the conversation.') : null,
+              h('div', { ref: chatEnd }))),
+          h('div', { className: 'lp-compose' },
+            h(Err, { msg: err }),
+            draftLine ? h('button', { type: 'button', className: 'pg-chip lp-draftchip', onClick: function () { setDraft(draftLine); } }, 'Use my lesson draft') : null,
+            guided && !busy ? h('div', { className: 'lp-stack', style: { gap: 8 } }, h('div', { className: 'pg-label pg-muted' }, 'Guided retry · pick the reply you would give'), h(G.ReplyChoices, { options: guided.map(function (o) { return o.text; }), onChoose: function (o) { send(o); } })) : null,
+            h('label', { className: 'lp-sr', htmlFor: 'lp-msg' }, 'Your message to ' + first(sc.persona)),
+            h('textarea', { id: 'lp-msg', className: 'pg-textarea lp-msg', rows: 3, placeholder: ended ? 'The conversation has ended. Get coaching below.' : 'Type what you would say to ' + first(sc.persona) + '. Enter to send, Shift+Enter for a new line.', value: draft, disabled: ended || aiState !== 'ready',
+              onChange: function (e) { setDraft(e.target.value); }, onKeyDown: function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } } }),
+            h('div', { className: 'lp-row' },
+              busy === 'persona' ? h(G.Button, { onClick: stop }, 'Stop') : h(G.Button, { variant: 'primary', onClick: function () { send(); }, disabled: !draft.trim() || ended || !!busy || aiState !== 'ready' }, 'Send'),
+              h(G.Button, { variant: 'ghost', onClick: askHint, disabled: !!busy || ended || aiState !== 'ready' }, 'Hint'),
+              h('span', { className: 'lp-spacer' }),
+              h(G.Button, { onClick: function () { resetScene(); }, disabled: !!busy || !turns.length }, 'Start over'),
+              h(G.Button, { variant: 'accent', onClick: getCoaching, disabled: !!busy || !replied || aiState !== 'ready' }, 'End and get coaching')))));
+    }
+
+    if (step === 'coach') {
+      var main;
+      if (coach.status === 'loading') main = h('section', { className: 'pg-card' }, h(Thinking, null, 'The coach is scoring your conversation against the 8-dimension rubric (usually 20 to 60 seconds)'));
+      else if (coach.status === 'error') main = h('section', { className: 'pg-card' }, h(Err, { msg: coach.msg, onRetry: getCoaching }));
+      else if (cur) main = h('div', { className: 'lp-coachgrid' },
+        h('div', { className: 'lp-stack lp-min0' },
+          h('section', { className: 'pg-card lp-stack' },
+            h('div', { className: 'lp-row-between' },
+              h('div', null, h('div', { className: 'pg-label pg-muted' }, 'Attempt ' + cur.n + ' · ' + cur.scenario + ' · ' + cur.level), h('div', { className: 'pg-h1' }, cur.total + ' / 32')),
+              h('div', { className: 'lp-focus' }, h('div', { className: 'pg-label pg-muted' }, prof.focus + ' · focus'), h('b', null, (cur.focusScore != null ? cur.focusScore : '–') + '/4'), cur.delta != null ? h('span', { className: cur.delta > 0 ? 'lp-up' : 'pg-muted' }, cur.delta > 0 ? ' +' + cur.delta + ' vs last time' : cur.delta === 0 ? ' no change yet' : ' ' + cur.delta + ' vs last time') : null)),
+            h(G.CoachFeedback, { strength: cur.strength, improve: cur.try_next, rewrite: cur.rewrite, onRetry: function () { retryFrom(cur); }, retryLabel: 'Retry from turn ' + cur.retry, onContinue: function () { resetScene(); setStep('practice'); }, continueLabel: 'Start the scene over' })),
+          h(NextStep, { scaf: scaf, persona: first(sc.persona), lvl: lvl, onRetry: retryAt, onLevelUp: levelUp, onAsk: function (t) { setQ(t); var el = document.getElementById('lp-q'); if (el) el.focus(); }, onRerun: function () { runScaffold(cur, cur.turns); } }),
+          h('section', { className: 'pg-card' }, h('div', { className: 'pg-label pg-muted', style: { marginBottom: 4 } }, 'Rubric, with the evidence the coach used'), h(G.RubricScore, { dimensions: cur.scores })),
+          attempts.length > 1 ? h('section', { className: 'pg-card lp-stack' }, h('div', { className: 'pg-label pg-muted' }, 'Your attempts'),
+            h('table', { className: 'lp-table' }, h('thead', null, h('tr', null, h('th', null, '#'), h('th', null, 'Situation'), h('th', null, 'Total'), h('th', null, prof.focus))),
+              h('tbody', null, attempts.map(function (a) { return h('tr', { key: a.n }, h('td', null, a.n), h('td', null, a.scenario + ' · ' + a.level), h('td', null, a.total + '/32'), h('td', null, (a.focusScore != null ? a.focusScore : '–') + '/4')); })))) : null),
+        h('section', { className: 'pg-card lp-stack lp-askcoach lp-min0' },
+          h('div', null, h('h2', { className: 'pg-h2' }, 'Ask the coach'), h('p', { className: 'pg-p pg-muted lp-small' }, 'Ask about your score, what to say, or what to do if ' + first(sc.persona) + ' reacts differently. The coach has your transcript and its feedback.')),
+          h('div', { className: 'pg-chat lp-coachlog', 'aria-live': 'polite' },
+            chat.map(function (m, i) { return m.role === 'user' ? h(G.ChatBubble, { key: i, from: 'manager' }, m.content) : h('div', { key: i, className: 'lp-coachmsg' + (m.error ? ' is-err' : '') }, h('span', { className: 'pg-msg-who' }, 'Coach'), m.content); }),
+            chatBusy ? (streamText ? h('div', { className: 'lp-coachmsg' }, h('span', { className: 'pg-msg-who' }, 'Coach'), streamText) : h(Thinking, null, 'Coach is thinking')) : null),
+          h('div', { className: 'lp-row', style: { gap: 8 } }, suggestions().map(function (s, i) { return h('button', { key: i, type: 'button', className: 'pg-chip', disabled: chatBusy, onClick: function () { askCoach(s); } }, s); })),
+          h('label', { className: 'lp-sr', htmlFor: 'lp-q' }, 'Your question for the coach'),
+          h('textarea', { id: 'lp-q', className: 'pg-textarea', rows: 2, placeholder: 'Ask a follow-up question. Enter to send.', value: q, disabled: aiState !== 'ready', onChange: function (e) { setQ(e.target.value); }, onKeyDown: function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); askCoach(); } } }),
+          h('div', { className: 'lp-row' }, chatBusy ? h(G.Button, { onClick: function () { if (chatCtl.current) chatCtl.current.abort(); } }, 'Stop') : h(G.Button, { variant: 'primary', onClick: function () { askCoach(); }, disabled: !q.trim() || aiState !== 'ready' }, 'Ask'))));
+      view = main || h('section', { className: 'pg-card' }, 'Finish a conversation in Practice to get coaching.');
+    }
+
+    return h('div', { className: 'lp-app' },
+      h('header', { className: 'lp-top' },
+        h('div', { className: 'lp-brand' }, h('span', { className: 'pg-serif lp-name' }, 'Practice Gym'), h(G.Badge, { tone: 'teal' }, 'Live prototype')),
+        h(Steps, { step: step, go: setStep, allowed: allowed })),
+      h('main', { className: 'lp-main' },
+        aiBanner,
+        view,
+        h('section', { className: 'lp-behind' },
+          h('label', { className: 'lp-check', htmlFor: 'lp-log' }, h('input', { id: 'lp-log', type: 'checkbox', checked: showLog, onChange: function (e) { setShowLog(e.target.checked); } }), h('span', null, 'Show the AI calls behind each step (prompt sent, reply returned)')),
+          showLog ? h('div', { className: 'lp-stack' }, log.length ? log.map(function (e, i) {
+            return h('details', { key: log.length - i, className: 'lp-call' }, h('summary', null, e.at + ' · ' + e.kind + ' · ' + e.tier + ' model' + (e.output == null ? ' · waiting' : '')),
+              h('div', { className: 'lp-callgrid' }, h('div', { className: 'lp-min0' }, h('div', { className: 'pg-label pg-muted' }, 'Sent'), h('pre', { className: 'lp-pre' }, e.input)), h('div', { className: 'lp-min0' }, h('div', { className: 'pg-label pg-muted' }, 'Returned'), h('pre', { className: 'lp-pre' }, e.output == null ? '...' : e.output))));
+          }) : h('p', { className: 'pg-p pg-muted lp-small' }, 'No calls yet. Each lesson, reply, hint, score and coach answer will appear here.')) : null,
+          h('p', { className: 'pg-p pg-muted lp-small' }, 'Prompts: Employee Persona v5, Coach v5 and Adaptive Scaffolding v2 as tested in the Prompt Lab, and Lesson Generator v4. Two small fixes found in testing are added but not yet re-tested: the lesson\'s Situation must say when and where, and the coach\'s rewrite line may use only facts from the transcript. The "Ask the coach" conversation uses a new prompt that has not been tested yet. Each AI call uses your own Claude account.'))));
+  }
+
+  ReactDOM.createRoot(document.getElementById('root')).render(h(App));
+})();
+
+</script>
+</body>
+</html>
