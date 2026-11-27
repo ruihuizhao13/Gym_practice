@@ -4,5 +4,5 @@
    Leave it empty to use the older option: a testing link that carries an API key (#key=...).
    Never put an API key in this file. */
 window.PG_CONFIG = {
-  proxyUrl: ''
+  proxyUrl: 'https://https://practice-gym-ai.ruihuizhao13.workers.dev/'
 };
