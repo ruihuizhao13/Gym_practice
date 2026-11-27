@@ -605,7 +605,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 
   // ---------- Prompts (Lesson v4, Persona v5, Coach v5, Coach chat new) ----------
   function portfolioJSON(p) {
-    return JSON.stringify({ name: p.name, role: p.role, industry: p.industry, direct_reports: p.reports, time_as_manager: p.tenure, priority_skill: 'Giving feedback', focus_dimension: p.focus, previous_scores: p.prev });
+    return JSON.stringify({ name: (p.name || '').trim() || 'the manager', role: p.role, industry: p.industry, direct_reports: p.reports, time_as_manager: p.tenure, priority_skill: 'Giving feedback', focus_dimension: p.focus, previous_scores: p.prev });
   }
   function lessonPrompt(p, sc, situation) {
     return 'You are the lesson writer for Practice Gym, a practice app for first-time managers. You do NOT write the theory: an expert wrote the lesson skeleton. Your job is to fill its example slots so they come from this learner\'s world.\n\n' +
@@ -923,7 +923,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
         h('section', { className: 'pg-card lp-stack' },
           h('div', { className: 'lp-row-between' }, h('h2', { className: 'pg-h2' }, 'You are the manager'), h('span', { className: 'pg-muted lp-small' }, 'From your portfolio')),
           h('div', { className: 'lp-grid2' },
-            h('label', { className: 'lp-field', htmlFor: 'lp-name' }, h('span', null, 'Your name'), h('input', { id: 'lp-name', className: 'lp-input', value: prof.name, onChange: function (e) { setProf(Object.assign({}, prof, { name: e.target.value || 'Jordan' })); } })),
+            h('label', { className: 'lp-field', htmlFor: 'lp-name' }, h('span', null, 'Your name'), h('input', { id: 'lp-name', className: 'lp-input', value: prof.name, onChange: function (e) { setProf(Object.assign({}, prof, { name: e.target.value })); }, onBlur: function (e) { var v = e.target.value.trim(); setProf(Object.assign({}, prof, { name: v || 'Jordan' })); } })),
             h('label', { className: 'lp-field', htmlFor: 'lp-role' }, h('span', null, 'Your role'), h('input', { id: 'lp-role', className: 'lp-input', value: prof.role, onChange: function (e) { setProf(Object.assign({}, prof, { role: e.target.value })); } }))),
           h('p', { className: 'pg-p lp-small' }, h('b', null, 'Focus area: ' + prof.focus), h('span', { className: 'pg-muted' }, ' · last score ' + (prof.prev[prof.focus] != null ? prof.prev[prof.focus] + '/4' : 'none') + ' · ' + prof.reports + ' reports · ' + prof.tenure + ' as a manager'))),
         h('section', { className: 'lp-stack' },
